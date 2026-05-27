@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Minggu 8 - Migration, Seeding, Routing, Model, Controller, View</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text-muted">Minggu 8: Migration, Seeding, Routing, Model, Controller, View</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan ">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Laravel adalah framework PHP berbasis pola arsitektur MVC (Model View Controller) yang dirancang untuk mempercepat dan menyederhanakan proses pengembangan aplikasi web. 
+                    Laravel menyediakan berbagai fitur bawaan seperti Eloquent ORM, Blade Template Engine, Artisan CLI, serta sistem routing yang ekspresif, sehingga developer dapat membangun aplikasi yang terstruktur, efisien, dan mudah dipelihara.
+                    <br><br>
+                    Pada praktikum ini, mahasiswa mempelajari alur lengkap pengembangan fitur dalam Laravel mulai dari perancangan struktur database hingga tampilan antarmuka pengguna. 
+                    Konsep yang dipelajari mencakup Migration untuk manajemen skema database, Seeding untuk pengisian data awal, Routing untuk pemetaan URL, Model untuk interaksi data, Controller sebagai logika aplikasi, serta View sebagai lapisan tampilan.
+                </p>
+                <a href="https://github.com/PAJILAPIP/portofolio" class="btn btn-light px-4 mb-3">
+                    <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Memahami konsep dasar framework Laravel dan arsitektur MVC (Model View Controller).</li>
+                    <li>Memahami struktur dan alur kerja aplikasi web berbasis Laravel.</li>
+                    <li>Mengelola database menggunakan migration dan seeding.</li>
+                    <li>Membuat dan mengatur routing pada aplikasi Laravel.</li>
+                    <li>Membangun model untuk proses interaksi dan pengolahan data.</li>
+                    <li>Membuat tampilan antarmuka menggunakan Blade Template.</li>
+                    <li>Mengembangkan controller sebagai penghubung antara model dan view.</li>
+                    <li>Memahami proses pengembangan aplikasi web yang terstruktur, efisien, dan mudah dipelihara.</li>
+                    <li>Mengimplementasikan operasi CRUD (Create, Read, Update, Delete) sederhana menggunakan Laravel.</li>
+                    <li>Membentuk dasar kemampuan untuk mempelajari pengembangan aplikasi web lanjutan seperti autentikasi, API, middleware, dan deployment Laravel.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>XAMPP (PHP & MySQL)</li>
+                            <li>Visual Studio Code</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Composer (Dependency Manager)</li>
+                            <li>Node.js & NPM</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+                
+                <div class="step-box">
+                    <h3>1. Konfigurasi Database</h3>
+                    <p>Sebelum memulai, file <code>.env</code> pada root project Laravel perlu dikonfigurasi agar aplikasi dapat terhubung ke database MySQL yang berjalan di XAMPP.</p>
+                    </p>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/1.png" alt="Screenshot 1">
+                    </div>
+                    <p>Konfigurasi ini memberitahu Laravel bahwa koneksi yang digunakan adalah MySQL, berjalan di localhost port 3306, dengan nama database praktikum_laravel.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Migration</h3>
+                    <p class="text-laprak">
+                        Migration adalah fitur Laravel yang memungkinkan developer mendefinisikan struktur tabel database menggunakan kode PHP, bukan SQL langsung. 
+                        Hal ini memberikan keuntungan berupa version control pada skema database, sehingga perubahan struktur dapat dilacak, dibagikan ke anggota tim, dan dikembalikan (rollback) bila diperlukan.
+                    </p>
+                    <p>Untuk membuat file migration, gunakan perintah berikut di terminal:</p>
+                    <code>php artisan make:migration create_products_table</code>
+                    <p>Perintah ini menghasilkan file baru di folder <code>database/migrations</code> dengan nama berisi timestamp dan nama yang diberikan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/2.png" alt="Screenshot 2">
+                    </div>
+                    <p>Setelah file migration dibuat, definisikan struktur tabel di dalam method <code>up()</code>. Untuk menjalankan migration agar tabel terbentuk di database secara otomatis, gunakan perintah:</p>
+                    <code>php artisan migrate</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/3.png" alt="Screenshot 3">
+                    </div>
+                    <p>Apabila terjadi kesalahan pada definisi tabel, gunakan perintah rollback untuk membatalkan migration terakhir:</p>
+                    <code>php artisan migrate:rollback</code>
+                    <p>Sedangkan untuk menghapus semua tabel dan menjalankan ulang seluruh migration dari awal, gunakan:</p>
+                    <code>php artisan migrate:fresh</code>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Seeding</h3>
+                    <p class="text-laprak">
+                        Seeding adalah mekanisme untuk mengisi data awal ke dalam database secara otomatis menggunakan kode program. 
+                        Seeder sangat berguna untuk menyiapkan data pengujian (dummy data) tanpa harus memasukkannya secara manual melalui antarmuka database.
+                    </p>
+                    <p>Untuk membuat file seeder, jalankan perintah berikut:</p>
+                    <code>php artisan make:seeder ProductSeeder</code>
+                    <p>File seeder akan tersimpan di folder <code>database/seeders</code>. Setelah mengisi logika insert data di dalam method <code>run()</code>, daftarkan seeder tersebut di file <code>DatabaseSeeder.php</code> menggunakan:</p>
+                    <code>$this->call(ProductSeeder::class);</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/4.png" alt="Screenshot 4">
+                        <img src="./ss/8/4-2.png" alt="Screenshot 4-2">
+                        <img src="./ss/8/4-1.png" alt="Screenshot 4-1">
+                    </div>
+                    <p>Untuk menjalankan seeder, gunakan perintah:</p>
+                    <code>php artisan db:seed</code>
+                    <p>Apabila ingin menjalankan migration dan seeding secara bersamaan sekaligus mereset seluruh tabel, gunakan:</p>
+                    <code>php artisan migrate:fresh --seed</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/5.png" alt="Screenshot 5">
+                        <img src="./ss/8/5-1.png" alt="Screenshot 5-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Routing</h3>
+                    <p>Routing digunakan untuk menentukan URL dan respons yang diberikan aplikasi ketika pengguna mengakses suatu alamat. Semua routing web berada pada file <code>routes/web.php</code>.</p>
+                    <p><strong>Routing Dasar</strong> digunakan untuk URL statis yang mengembalikan respons langsung:</p>
+                    <code>Route::get('/', function () { return 'Selamat Datang di Laravel'; });</code>
+                    <p><strong>Routing Parameter</strong> digunakan ketika URL membutuhkan segmen dinamis, misalnya ID produk. Diakses melalui <code>http://127.0.0.1:8000/produk/1</code>:</p>
+                    <code>Route::get('/produk/{id}', function ($id) { return 'Produk ID: ' . $id; });</code>
+                    <p><strong>Named Route</strong> memberikan nama pada route sehingga mudah direferensikan di tempat lain dalam aplikasi:</p>
+                    <code>Route::get('/dashboard', function () { return 'Halaman Dashboard'; })->name('dashboard');</code>
+                    <p><strong>Resource Route</strong> secara otomatis mendaftarkan tujuh route CRUD sekaligus untuk satu controller:</p>
+                    <code>Route::resource('products', ProductController::class);</code>
+                    <p>Untuk melihat daftar seluruh route yang terdaftar dalam aplikasi, gunakan perintah:</p>
+                    <code>php artisan route:list</code>
+                    <p>Route nanti akan dihubungkan dengan controller untuk menangani request yang masuk sesuai Screenshot:</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/6.png" alt="Screenshot 6">
+                        <img src="./ss/8/6-1.png" alt="Screenshot 6-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>5. Model</h3>
+                    <p>Model adalah representasi data dalam aplikasi. Laravel menggunakan Eloquent ORM yang memungkinkan developer berinteraksi dengan tabel database menggunakan sintaks PHP berorientasi objek tanpa perlu menulis query SQL secara langsung. Untuk membuat model baru, gunakan perintah:</p>
+                    <code>php artisan make:model Product</code>
+                    <p>Properti <code>$fillable</code> pada model berfungsi sebagai whitelist kolom yang diizinkan untuk diisi secara massal (mass assignment), melindungi aplikasi dari serangan mass assignment vulnerability. Operasi CRUD dengan Eloquent dilakukan sebagai berikut:</p>
+                    <code>Product::create([...]);</code> &nbsp; (menambah data) <br>
+                    <code>Product::all();</code> &nbsp; (mengambil semua data) <br>
+                    <code>Product::find($id)->update([...]);</code> &nbsp; (mengubah data) <br>
+                    <code>Product::find($id)->delete();</code> &nbsp; (menghapus data)
+                    <div class="img-placeholder">
+                        <img src="./ss/8/7.png" alt="Screenshot 7">
+                        <img src="./ss/8/7-1.png" alt="Screenshot 7-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>6. View</h3>
+                    <p>View adalah lapisan presentasi yang menampilkan antarmuka kepada pengguna. Laravel menggunakan Blade sebagai template engine dengan sintaks yang bersih dan ringkas. File view disimpan di folder <code>resources/views</code> dengan ekstensi <code>.blade.php</code>. Untuk membuat view baru, gunakan perintah:</p>
+                    <code>php artisan make:view nama-view</code>
+                    <p>Blade menyediakan directive khusus untuk mempermudah penulisan logika di dalam tampilan. <code>@foreach</code> digunakan untuk iterasi data, <code>@extends</code> untuk menggunakan layout utama, <code>@section</code> untuk mendefinisikan blok konten, <code>@yield</code> untuk menampilkan konten dari section, dan <code>@include</code> untuk menyertakan file view lain. Fitur Blade Layout memungkinkan pembuatan template induk yang dapat digunakan ulang oleh banyak halaman, sehingga bagian seperti header, navbar, dan footer cukup ditulis satu kali.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/8.png" alt="Screenshot 8">
+                        <img src="./ss/8/8-1.png" alt="Screenshot 8-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>7. Controller</h3>
+                    <p>Controller bertugas mengelola logika aplikasi dan menjadi jembatan antara Model dan View. Ketika pengguna mengakses suatu URL, route akan meneruskan request tersebut ke method yang sesuai di dalam Controller. Untuk membuat controller baru, gunakan perintah:</p>
+                    <code>php artisan make:controller ProductController</code>
+                    <p>Untuk membuat resource controller yang otomatis berisi tujuh method CRUD sekaligus, tambahkan flag <code>--resource</code>:</p>
+                    <code>php artisan make:controller ProductController --resource</code>
+                    <p>File controller tersimpan di <code>app/Http/Controllers</code>. Tujuh method pada resource controller mencakup <code>index</code> untuk menampilkan daftar data, <code>create</code> untuk form tambah, <code>store</code> untuk menyimpan data baru, <code>show</code> untuk detail data, <code>edit</code> untuk form edit, <code>update</code> untuk menyimpan perubahan, dan <code>destroy</code> untuk menghapus data.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/8/9.png" alt="Screenshot 9">
+                        <img src="./ss/8/9-1.png" alt="Screenshot 9-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Tugas: CRUD Data Mahasiswa</h3>
+                    <p>Pada tugas ini diimplementasikan fitur CRUD lengkap untuk data mahasiswa menggunakan seluruh konsep yang telah dipelajari, yaitu Migration, Seeding, Model, Routing, Controller, dan View.</p>
+
+                    <h5>Step 1 – Migration</h5>
+                    <p>Membuat file migration untuk tabel <code>mahasiswas</code> dengan perintah:</p>
+                    <code>php artisan make:migration create_mahasiswas_table</code>
+                    <p>Tabel didefinisikan dengan kolom <code>id</code>, <code>nim</code> (unique), <code>nama</code>, <code>jurusan</code>, <code>email</code> (unique), <code>no_hp</code> (nullable), dan <code>timestamps</code>. Setelah file migration diisi, jalankan dengan <code>php artisan migrate</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="" alt="Screenshot Tugas 1">
+                        <img src="" alt="Screenshot Tugas 2">
+                    </div>
+
+                    <h5>Step 2 – Seeder</h5>
+                    <p>Membuat seeder untuk mengisi data awal mahasiswa dengan perintah:</p>
+                    <code>php artisan make:seeder MahasiswaSeeder</code>
+                    <p>File <code>MahasiswaSeeder.php</code> diisi dengan beberapa data dummy menggunakan <code>DB::table('mahasiswas')->insert([...])</code>. Seeder kemudian didaftarkan di <code>DatabaseSeeder.php</code> dan dijalankan dengan <code>php artisan db:seed</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="" alt="Screenshot Tugas 3">
+                        <img src="" alt="Screenshot Tugas 4">
+                    </div>
+
+                    <h5>Step 3 – Model</h5>
+                    <p>Membuat model Mahasiswa dengan perintah:</p>
+                    <code>php artisan make:model Mahasiswa</code>
+                    <p>Pada file <code>Mahasiswa.php</code>, properti <code>$fillable</code> diisi dengan kolom <code>nim</code>, <code>nama</code>, <code>jurusan</code>, <code>email</code>, dan <code>no_hp</code> agar kolom-kolom tersebut dapat diisi secara massal (mass assignment).</p>
+                    <div class="img-placeholder">
+                        <img src="" alt="Screenshot Tugas 5">
+                    </div>
+
+                    <h5>Step 4 – Controller</h5>
+                    <p>Membuat resource controller untuk mahasiswa dengan perintah:</p>
+                    <code>php artisan make:controller MahasiswaController --resource</code>
+                    <p>File <code>MahasiswaController.php</code> diisi dengan tujuh method: <code>index</code> mengambil semua data dengan <code>Mahasiswa::all()</code> lalu mengirimkannya ke view, <code>create</code> menampilkan form tambah, <code>store</code> memvalidasi dan menyimpan data baru, <code>show</code> menampilkan detail satu data, <code>edit</code> menampilkan form edit dengan data yang sudah ada, <code>update</code> memvalidasi dan menyimpan perubahan, serta <code>destroy</code> menghapus data dari database. Setiap method yang mengubah data diakhiri dengan redirect dan pesan sukses menggunakan session flash.</p>
+                    <div class="img-placeholder">
+                        <img src="" alt="Screenshot Tugas 6">
+                        <img src="" alt="Screenshot Tugas 7">
+                    </div>
+
+                    <h5>Step 5 – Routing</h5>
+                    <p>Mendaftarkan seluruh route CRUD mahasiswa sekaligus di <code>routes/web.php</code> menggunakan resource route:</p>
+                    <code>Route::resource('mahasiswa', MahasiswaController::class);</code>
+                    <p>Satu baris ini secara otomatis mendaftarkan tujuh route yang mencakup GET, POST, PUT, dan DELETE untuk seluruh operasi CRUD. Dapat dicek hasilnya dengan <code>php artisan route:list</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="" alt="Screenshot Tugas 8">
+                    </div>
+
+                    <h5>Step 6 – View</h5>
+                    <p>Membuat folder <code>resources/views/mahasiswa/</code> beserta empat file Blade. File <code>layouts/app.blade.php</code> sebagai template utama berisi struktur HTML, navbar, dan container yang digunakan ulang oleh semua halaman. File <code>index.blade.php</code> menampilkan tabel daftar mahasiswa lengkap dengan tombol Detail, Edit, dan Hapus. File <code>create.blade.php</code> berisi form untuk menambah data mahasiswa baru beserta validasi error. File <code>edit.blade.php</code> menampilkan form edit yang sudah terisi data yang dipilih menggunakan method spoofing <code>@method('PUT')</code>. File <code>show.blade.php</code> menampilkan detail satu data mahasiswa dalam format tabel.</p>
+                    <div class="img-placeholder">
+                        <img src="" alt="Screenshot Tugas 9">
+                        <img src="" alt="Screenshot Tugas 10">
+                    </div>
+
+                    <h5>Hasil Akhir</h5>
+                    <p>Aplikasi CRUD data mahasiswa berhasil berjalan di <code>http://127.0.0.1:8000/mahasiswa</code> dengan fitur menampilkan daftar mahasiswa, menambah data baru, melihat detail, mengedit data yang ada, serta menghapus data disertai konfirmasi.</p>
+                    <div class="img-placeholder">
+                        <img src="" alt="Screenshot Hasil 1">
+                        <img src="" alt="Screenshot Hasil 2">
+                        <img src="" alt="Screenshot Hasil 3">
+                    </div>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">5. Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa Laravel merupakan framework PHP yang sangat membantu dalam proses pengembangan aplikasi web karena menggunakan konsep MVC (Model–View–Controller) yang membuat struktur program menjadi lebih terorganisir. Laravel juga menyediakan berbagai fitur bawaan seperti routing, middleware, Blade Template Engine, dan Eloquent ORM yang mempermudah pengelolaan database serta pengembangan antarmuka aplikasi.
+                        Selain itu, proses instalasi Laravel membutuhkan beberapa tools pendukung seperti XAMPP, Composer, Git, Node.js, dan NPM agar lingkungan development dapat berjalan dengan baik. Setelah melakukan instalasi dan konfigurasi, project Laravel dapat dibuat dan dijalankan menggunakan perintah Artisan. Dengan praktikum ini, mahasiswa dapat memahami dasar penggunaan Laravel serta mengetahui tahapan awal dalam membangun aplikasi web menggunakan framework Laravel.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
