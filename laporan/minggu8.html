@@ -217,65 +217,9 @@
 
                 <div class="step-box">
                     <h3>Tugas: CRUD Data Mahasiswa</h3>
-                    <p>Pada tugas ini diimplementasikan fitur CRUD lengkap untuk data mahasiswa menggunakan seluruh konsep yang telah dipelajari, yaitu Migration, Seeding, Model, Routing, Controller, dan View.</p>
-
-                    <h5>Step 1 – Migration</h5>
-                    <p>Membuat file migration untuk tabel <code>mahasiswas</code> dengan perintah:</p>
-                    <code>php artisan make:migration create_mahasiswas_table</code>
-                    <p>Tabel didefinisikan dengan kolom <code>id</code>, <code>nim</code> (unique), <code>nama</code>, <code>jurusan</code>, <code>email</code> (unique), <code>no_hp</code> (nullable), dan <code>timestamps</code>. Setelah file migration diisi, jalankan dengan <code>php artisan migrate</code>.</p>
-                    <div class="img-placeholder">
-                        <img src="" alt="Screenshot Tugas 1">
-                        <img src="" alt="Screenshot Tugas 2">
-                    </div>
-
-                    <h5>Step 2 – Seeder</h5>
-                    <p>Membuat seeder untuk mengisi data awal mahasiswa dengan perintah:</p>
-                    <code>php artisan make:seeder MahasiswaSeeder</code>
-                    <p>File <code>MahasiswaSeeder.php</code> diisi dengan beberapa data dummy menggunakan <code>DB::table('mahasiswas')->insert([...])</code>. Seeder kemudian didaftarkan di <code>DatabaseSeeder.php</code> dan dijalankan dengan <code>php artisan db:seed</code>.</p>
-                    <div class="img-placeholder">
-                        <img src="" alt="Screenshot Tugas 3">
-                        <img src="" alt="Screenshot Tugas 4">
-                    </div>
-
-                    <h5>Step 3 – Model</h5>
-                    <p>Membuat model Mahasiswa dengan perintah:</p>
-                    <code>php artisan make:model Mahasiswa</code>
-                    <p>Pada file <code>Mahasiswa.php</code>, properti <code>$fillable</code> diisi dengan kolom <code>nim</code>, <code>nama</code>, <code>jurusan</code>, <code>email</code>, dan <code>no_hp</code> agar kolom-kolom tersebut dapat diisi secara massal (mass assignment).</p>
-                    <div class="img-placeholder">
-                        <img src="" alt="Screenshot Tugas 5">
-                    </div>
-
-                    <h5>Step 4 – Controller</h5>
-                    <p>Membuat resource controller untuk mahasiswa dengan perintah:</p>
-                    <code>php artisan make:controller MahasiswaController --resource</code>
-                    <p>File <code>MahasiswaController.php</code> diisi dengan tujuh method: <code>index</code> mengambil semua data dengan <code>Mahasiswa::all()</code> lalu mengirimkannya ke view, <code>create</code> menampilkan form tambah, <code>store</code> memvalidasi dan menyimpan data baru, <code>show</code> menampilkan detail satu data, <code>edit</code> menampilkan form edit dengan data yang sudah ada, <code>update</code> memvalidasi dan menyimpan perubahan, serta <code>destroy</code> menghapus data dari database. Setiap method yang mengubah data diakhiri dengan redirect dan pesan sukses menggunakan session flash.</p>
-                    <div class="img-placeholder">
-                        <img src="" alt="Screenshot Tugas 6">
-                        <img src="" alt="Screenshot Tugas 7">
-                    </div>
-
-                    <h5>Step 5 – Routing</h5>
-                    <p>Mendaftarkan seluruh route CRUD mahasiswa sekaligus di <code>routes/web.php</code> menggunakan resource route:</p>
-                    <code>Route::resource('mahasiswa', MahasiswaController::class);</code>
-                    <p>Satu baris ini secara otomatis mendaftarkan tujuh route yang mencakup GET, POST, PUT, dan DELETE untuk seluruh operasi CRUD. Dapat dicek hasilnya dengan <code>php artisan route:list</code>.</p>
-                    <div class="img-placeholder">
-                        <img src="" alt="Screenshot Tugas 8">
-                    </div>
-
-                    <h5>Step 6 – View</h5>
-                    <p>Membuat folder <code>resources/views/mahasiswa/</code> beserta empat file Blade. File <code>layouts/app.blade.php</code> sebagai template utama berisi struktur HTML, navbar, dan container yang digunakan ulang oleh semua halaman. File <code>index.blade.php</code> menampilkan tabel daftar mahasiswa lengkap dengan tombol Detail, Edit, dan Hapus. File <code>create.blade.php</code> berisi form untuk menambah data mahasiswa baru beserta validasi error. File <code>edit.blade.php</code> menampilkan form edit yang sudah terisi data yang dipilih menggunakan method spoofing <code>@method('PUT')</code>. File <code>show.blade.php</code> menampilkan detail satu data mahasiswa dalam format tabel.</p>
-                    <div class="img-placeholder">
-                        <img src="" alt="Screenshot Tugas 9">
-                        <img src="" alt="Screenshot Tugas 10">
-                    </div>
-
-                    <h5>Hasil Akhir</h5>
-                    <p>Aplikasi CRUD data mahasiswa berhasil berjalan di <code>http://127.0.0.1:8000/mahasiswa</code> dengan fitur menampilkan daftar mahasiswa, menambah data baru, melihat detail, mengedit data yang ada, serta menghapus data disertai konfirmasi.</p>
-                    <div class="img-placeholder">
-                        <img src="" alt="Screenshot Hasil 1">
-                        <img src="" alt="Screenshot Hasil 2">
-                        <img src="" alt="Screenshot Hasil 3">
-                    </div>
+                    <a href="https://github.com/PAJILAPIP/tugas_CRUD_Mahasiwa" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                    </a>
                 </div>
             </section>
 

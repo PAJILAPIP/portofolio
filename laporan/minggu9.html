@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Minggu 9 - Laravel Relationship</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Minggu 9: Laravel Relationship</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Laravel adalah framework PHP yang menggunakan pola arsitektur MVC (Model View Controller) dan menyediakan Eloquent ORM sebagai lapisan abstraksi untuk berinteraksi dengan database. 
+                    Salah satu kekuatan utama Eloquent adalah kemampuannya mendefinisikan dan mengelola <em>relationship</em> antar tabel secara elegan langsung dari kode PHP, tanpa perlu menulis query JOIN secara manual.
+                    <br><br>
+                    Pada praktikum ini, mahasiswa mempelajari konsep dan implementasi <em>relationship</em> dalam Laravel melalui studi kasus sistem akademik sederhana yang melibatkan tiga entitas: <strong>Major</strong> (Jurusan), <strong>Student</strong> (Mahasiswa), dan <strong>Subject</strong> (Mata Kuliah). 
+                    Hubungan antar entitas tersebut mencakup relasi <strong>One-to-Many</strong> antara Major dan Student, serta relasi <strong>Many-to-Many</strong> antara Student dan Subject melalui tabel pivot. 
+                    Pemahaman tentang relationship ini menjadi fondasi penting dalam membangun aplikasi yang datanya saling berkaitan dan terstruktur dengan baik.
+                </p>
+                <a href="https://github.com/PAJILAPIP/portofolio" class="btn btn-light px-4 mb-3">
+                    <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Memahami konsep <em>relationship</em> dalam Laravel dan Eloquent ORM.</li>
+                    <li>Mengimplementasikan relasi <strong>One-to-Many</strong> antara model Major dan Student.</li>
+                    <li>Mengimplementasikan relasi <strong>Many-to-Many</strong> antara model Student dan Subject menggunakan tabel pivot.</li>
+                    <li>Membuat migration dengan <em>foreign key</em> dan tabel pivot.</li>
+                    <li>Menggunakan method Eloquent seperti <code>hasMany</code>, <code>belongsTo</code>, dan <code>belongsToMany</code> untuk mendefinisikan relasi.</li>
+                    <li>Menerapkan <em>eager loading</em> dengan <code>with()</code> untuk menghindari masalah N+1 query.</li>
+                    <li>Menggunakan method <code>attach()</code>, <code>detach()</code>, dan <code>sync()</code> untuk mengelola relasi Many-to-Many.</li>
+                    <li>Menampilkan data beserta relasinya pada halaman view menggunakan Blade Template.</li>
+                    <li>Membuat seeder yang mengisi data awal termasuk relasi pivot antar tabel.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>XAMPP (PHP & MySQL)</li>
+                            <li>Visual Studio Code</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Composer (Dependency Manager)</li>
+                            <li>Project Laravel (dari praktikum sebelumnya)</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+                
+                <div class="step-box">
+                    <h3>1. Membuat Migration</h3>
+                    <p>Migration digunakan untuk mendefinisikan struktur tabel database. Pada praktikum ini dibuat empat tabel: <code>majors</code>, <code>students</code>, <code>subjects</code>, dan tabel pivot <code>student_subject</code>.</p>
+
+                    <p><strong>A. Migration tabel majors</strong></p>
+                    <code>php artisan make:migration create_majors_table</code>
+                    <p>Tabel ini hanya memiliki kolom <code>id</code> (primary key) dan <code>name</code> (nama jurusan). Tabel <code>majors</code> harus dibuat terlebih dahulu karena menjadi referensi foreign key bagi tabel <code>students</code>.</p>
+
+                    <p><strong>B. Migration tabel students</strong></p>
+                    <code>php artisan make:migration create_students_table</code>
+                    <p>Tabel ini memiliki kolom <code>nim</code> (unik), <code>name</code>, <code>address</code>, dan <code>major_id</code> sebagai foreign key yang mengacu ke tabel <code>majors</code>. 
+                    Penggunaan <code>->constrained('majors')->onDelete('cascade')</code> memastikan jika data jurusan dihapus, data mahasiswa yang berelasi juga ikut terhapus secara otomatis.</p>
+
+                    <p><strong>C. Migration tabel subjects</strong></p>
+                    <code>php artisan make:migration create_subjects_table</code>
+                    <p>Tabel ini menyimpan data mata kuliah dengan kolom <code>name</code> dan <code>sks</code> (Satuan Kredit Semester bertipe integer).</p>
+
+                    <p><strong>D. Migration tabel pivot student_subject</strong></p>
+                    <code>php artisan make:migration create_student_subject_table</code>
+                    <p>Tabel pivot ini menghubungkan relasi Many-to-Many antara Student dan Subject. Kolom <code>student_id</code> dan <code>subject_id</code> keduanya merupakan foreign key. 
+                    Constraint <code>$table->unique(['student_id', 'subject_id'])</code> mencegah satu mahasiswa mendaftarkan mata kuliah yang sama lebih dari satu kali.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/1.png" alt="Screenshot 1">
+                    </div>
+
+                    <p>Setelah semua file migration dibuat dan didefinisikan, jalankan seluruh migration sekaligus dengan perintah:</p>
+                    <code>php artisan migrate</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/2.png" alt="Screenshot 2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Membuat Model dengan Relationship</h3>
+                    <p>Model dalam Laravel merepresentasikan tabel database dan menjadi tempat mendefinisikan relasi antar tabel menggunakan Eloquent ORM.</p>
+
+                    <p><strong>A. Model Major</strong></p>
+                    <code>php artisan make:model Major</code>
+                    <p>Pada model ini didefinisikan method <code>students()</code> yang mengembalikan <code>$this->hasMany(Student::class)</code>. 
+                    Artinya satu jurusan (<em>Major</em>) dapat memiliki banyak mahasiswa (<em>Student</em>) — inilah relasi <strong>One-to-Many</strong>.</p>
+
+                    <p><strong>B. Model Student</strong></p>
+                    <code>php artisan make:model Student</code>
+                    <p>Model ini mendefinisikan dua relasi sekaligus. Method <code>major()</code> mengembalikan <code>$this->belongsTo(Major::class)</code> — setiap mahasiswa dimiliki oleh satu jurusan. 
+                    Method <code>subjects()</code> mengembalikan <code>$this->belongsToMany(Subject::class)</code> — seorang mahasiswa dapat mengambil banyak mata kuliah, dan ini merupakan relasi <strong>Many-to-Many</strong> melalui tabel pivot.</p>
+
+                    <p><strong>C. Model Subject</strong></p>
+                    <code>php artisan make:model Subject</code>
+                    <p>Method <code>students()</code> pada model ini mengembalikan <code>$this->belongsToMany(Student::class)</code>. 
+                    Ini adalah sisi balik dari relasi Many-to-Many, artinya satu mata kuliah dapat diambil oleh banyak mahasiswa.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/3.png" alt="Screenshot 3">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Membuat Seeder</h3>
+                    <p>Seeder digunakan untuk mengisi data awal ke database secara otomatis. Urutan eksekusi seeder sangat penting karena data <code>majors</code> dan <code>subjects</code> harus ada lebih dulu sebelum <code>students</code> dibuat.</p>
+
+                    <p><strong>A. MajorSeeder</strong></p>
+                    <code>php artisan make:seeder MajorSeeder</code>
+                    <p>Seeder ini mengisi tabel <code>majors</code> dengan empat data jurusan menggunakan <code>Major::create()</code> di dalam loop <code>foreach</code>.</p>
+
+                    <p><strong>B. SubjectSeeder</strong></p>
+                    <code>php artisan make:seeder SubjectSeeder</code>
+                    <p>Seeder ini mengisi tabel <code>subjects</code> dengan lima mata kuliah beserta nilai SKS masing-masing.</p>
+
+                    <p><strong>C. StudentSeeder</strong></p>
+                    <code>php artisan make:seeder StudentSeeder</code>
+                    <p>Seeder ini tidak hanya membuat data mahasiswa, tetapi juga secara otomatis menghubungkan setiap mahasiswa dengan 2 hingga 4 mata kuliah secara acak menggunakan method <code>attach()</code>:</p>
+                    <code>$student->subjects()->attach($subjects);</code>
+                    <p>Method <code>Subject::inRandomOrder()->take(rand(2, 4))->pluck('id')</code> mengambil sejumlah ID mata kuliah secara acak, lalu <code>attach()</code> memasukkan kombinasinya ke tabel pivot <code>student_subject</code>.</p>
+
+                    <p>Ketiga seeder didaftarkan di <code>DatabaseSeeder.php</code> dengan urutan yang benar, kemudian dijalankan sekaligus dengan perintah:</p>
+                    <code>php artisan db:seed</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/4.png" alt="Screenshot 4">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Membuat Controller</h3>
+                    <p>Controller menangani logika aplikasi dan menjadi jembatan antara model dan view. Dibuat dengan perintah:</p>
+                    <code>php artisan make:controller StudentController</code>
+
+                    <p>Berikut penjelasan setiap method pada <code>StudentController</code>:</p>
+                    <ul>
+                        <li><strong><code>index()</code></strong> — Mengambil semua data mahasiswa beserta relasi jurusan dan mata kuliahnya menggunakan <em>eager loading</em> <code>Student::with(['major', 'subjects'])->get()</code>, lalu mengirimkannya ke view <code>students.index</code>.</li>
+                        <li><strong><code>show($id)</code></strong> — Mengambil satu data mahasiswa beserta relasinya berdasarkan ID untuk ditampilkan di halaman detail.</li>
+                        <li><strong><code>create()</code></strong> — Mengambil semua data jurusan dan mata kuliah dari database untuk ditampilkan sebagai pilihan pada form tambah mahasiswa.</li>
+                        <li><strong><code>store(Request $request)</code></strong> — Memvalidasi input, menyimpan data mahasiswa baru, lalu menghubungkannya dengan mata kuliah yang dipilih menggunakan <code>$student->subjects()->attach($request->subjects)</code>.</li>
+                        <li><strong><code>edit($id)</code></strong> — Mengambil data mahasiswa yang akan diedit beserta mata kuliah yang sudah diambilnya, untuk menampilkan form edit dengan kondisi yang sudah tercentang.</li>
+                        <li><strong><code>update(Request $request, $id)</code></strong> — Memperbarui data mahasiswa dan memperbarui relasi mata kuliah menggunakan <code>sync()</code> yang secara otomatis menambah relasi baru dan menghapus yang tidak dipilih lagi.</li>
+                        <li><strong><code>destroy($id)</code></strong> — Menghapus semua relasi mata kuliah terlebih dahulu dengan <code>detach()</code> sebelum menghapus data mahasiswa, untuk menjaga integritas data.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/5.png" alt="Screenshot 5">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>5. Membuat Routes</h3>
+                    <p>Routing mendaftarkan URL yang dapat diakses oleh pengguna. Semua route didefinisikan di file <code>routes/web.php</code>.</p>
+                    <p>Route redirect digunakan agar halaman utama (<code>/</code>) langsung diarahkan ke daftar mahasiswa:</p>
+                    <code>Route::get('/', function () { return redirect()->route('students.index'); });</code>
+                    <p><strong>Resource Route</strong> secara otomatis mendaftarkan tujuh route CRUD sekaligus untuk StudentController:</p>
+                    <code>Route::resource('students', StudentController::class);</code>
+                    <p>Untuk melihat seluruh route yang terdaftar, gunakan perintah:</p>
+                    <code>php artisan route:list</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/6.png" alt="Screenshot 6">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>6. Membuat Views</h3>
+                    <p>View adalah lapisan tampilan yang menampilkan antarmuka kepada pengguna. Laravel menggunakan Blade sebagai template engine. File view disimpan di folder <code>resources/views</code>.</p>
+
+                    <p><strong>A. Layout Utama (<code>layouts/app.blade.php</code>)</strong> — Template induk yang digunakan oleh semua halaman. Memuat Bootstrap 5 dari CDN, navbar, dan blok <code>@yield('content')</code> sebagai tempat konten halaman anak disisipkan.</p>
+
+                    <p><strong>B. Index Students (<code>students/index.blade.php</code>)</strong> — Menampilkan daftar semua mahasiswa dalam bentuk tabel. Data relasi diakses langsung melalui properti model:</p>
+                    <code>{{ $student->major->name }}</code> &nbsp; (mengakses nama jurusan via relasi belongsTo) <br>
+                    <code>{{ $student->subjects->sum('sks') }}</code> &nbsp; (menghitung total SKS dari koleksi mata kuliah)
+                    <p>Directive <code>@foreach($student->subjects as $subject)</code> digunakan untuk menampilkan setiap mata kuliah sebagai badge.</p>
+
+                    <p><strong>C. Create Student (<code>students/create.blade.php</code>)</strong> — Menampilkan form untuk menambah mahasiswa baru. Dropdown jurusan diisi dari variabel <code>$majors</code>, sedangkan pilihan mata kuliah ditampilkan sebagai checkbox yang diisi dari variabel <code>$subjects</code>. 
+                    Direktif <code>@error</code> digunakan untuk menampilkan pesan validasi di bawah setiap input.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/7.png" alt="Screenshot 7">
+                        <img src="./ss/9/7-1.png" alt="Screenshot 7-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Tugas: Query dengan Relationship</h3>
+                    <p>Berikut adalah query Eloquent untuk menjawab keempat pertanyaan tugas praktikum.</p>
+
+                    <p><strong>1. Semua mahasiswa beserta jurusan dan mata kuliahnya</strong></p>
+                    <p>Query ini menggunakan <em>eager loading</em> untuk mengambil data mahasiswa sekaligus relasi jurusan dan mata kuliah dalam satu eksekusi query yang efisien:</p>
+                    <code>$students = Student::with(['major', 'subjects'])->get();</code>
+                    <p>Tanpa <code>with()</code>, Laravel akan menjalankan query tambahan untuk setiap mahasiswa (N+1 problem). Dengan eager loading, semua data disiapkan sekaligus. Hasilnya dapat diakses di view dengan <code>$student->major->name</code> dan <code>@foreach($student->subjects as $subject)</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/t1.png" alt="Screenshot Tugas 1">
+                    </div>
+
+                    <p><strong>2. Jurusan yang memiliki mahasiswa terbanyak</strong></p>
+                    <p>Query ini memanfaatkan method <code>withCount()</code> untuk menghitung jumlah relasi students pada setiap Major, lalu mengurutkan hasilnya secara menurun:</p>
+                    <code>$majorTerbanyak = Major::withCount('students')->orderBy('students_count', 'desc')->first();</code>
+                    <p><code>withCount('students')</code> secara otomatis menambahkan kolom virtual <code>students_count</code> pada setiap objek Major. Method <code>orderBy('students_count', 'desc')</code> mengurutkan dari yang terbanyak, dan <code>first()</code> mengambil satu hasil teratas.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/t2.png" alt="Screenshot Tugas 2">
+                    </div>
+
+                    <p><strong>3. Mata kuliah yang diambil oleh mahasiswa tertentu</strong></p>
+                    <p>Untuk mengambil daftar mata kuliah seorang mahasiswa berdasarkan ID-nya, cukup akses properti relasi setelah menemukan mahasiswanya:</p>
+                    <code>$student = Student::with('subjects')->findOrFail($id);</code> <br>
+                    <code>$mataKuliah = $student->subjects;</code>
+                    <p><code>findOrFail($id)</code> akan melempar exception 404 secara otomatis jika ID tidak ditemukan. Properti <code>$student->subjects</code> mengembalikan koleksi Eloquent berisi semua mata kuliah yang diambil mahasiswa tersebut.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/t3.png" alt="Screenshot Tugas 3">
+                    </div>
+
+                    <p><strong>4. Total SKS yang diambil setiap mahasiswa</strong></p>
+                    <p>Total SKS diperoleh dengan memanggil method <code>sum()</code> pada koleksi mata kuliah yang sudah di-load bersama data mahasiswa:</p>
+                    <code>$students = Student::with('subjects')->get();</code> <br>
+                    <code>// Di view atau setelah query:</code> <br>
+                    <code>$totalSks = $student->subjects->sum('sks');</code>
+                    <p>Karena data subjects sudah di-eager load, method <code>sum('sks')</code> tidak memicu query tambahan ke database — kalkulasi dilakukan langsung pada koleksi PHP yang ada di memori. Di view, ini ditampilkan per baris tabel menggunakan <code>{{ $student->subjects->sum('sks') }}</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/9/t4.png" alt="Screenshot Tugas 4">
+                    </div>
+
+                    <a href="https://github.com/PAJILAPIP/portofolio" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                    </a>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa Laravel menyediakan sistem <em>relationship</em> yang powerful melalui Eloquent ORM untuk mengelola relasi antar tabel database. 
+                        Relasi <strong>One-to-Many</strong> diimplementasikan menggunakan method <code>hasMany()</code> pada sisi induk dan <code>belongsTo()</code> pada sisi anak, sedangkan relasi <strong>Many-to-Many</strong> menggunakan <code>belongsToMany()</code> pada kedua sisi model yang dihubungkan melalui tabel pivot.
+                        Pengelolaan data relasi Many-to-Many dilakukan dengan method <code>attach()</code> untuk menambah relasi, <code>detach()</code> untuk menghapus relasi, dan <code>sync()</code> untuk menyinkronkan relasi secara penuh sekaligus. 
+                        Selain itu, penerapan <em>eager loading</em> dengan <code>with()</code> sangat penting untuk menghindari masalah N+1 query yang dapat memperlambat performa aplikasi ketika menampilkan data dalam jumlah besar. 
+                        Dengan memahami dan mengimplementasikan relationship dalam Laravel, mahasiswa dapat membangun aplikasi web dengan struktur data yang terorganisir, efisien, dan mudah dipelihara.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
