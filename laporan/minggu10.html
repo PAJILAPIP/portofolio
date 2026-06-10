@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Minggu 10 - Laravel UI, Bootstrap, Authentication & Templating</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5">
+
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text-muted">Minggu 10: Laravel UI, Bootstrap Authentication & Templating — Sistem Informasi Sekolah</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Laravel adalah framework PHP yang menyediakan berbagai paket dan ekosistem untuk mempercepat pengembangan aplikasi web. 
+                    Salah satu paket yang sangat populer adalah <strong>Laravel UI</strong>, yang memungkinkan developer men-generate scaffolding autentikasi secara otomatis — mencakup controller, model, view, dan route untuk fitur login, register, serta lupa password — tanpa perlu membuatnya dari nol.
+                    <br><br>
+                    Pada praktikum ini, mahasiswa mempelajari alur lengkap pembangunan aplikasi Sistem Informasi Sekolah (<em>Sisfo</em>) berbasis Laravel 9. 
+                    Proses dimulai dari pembuatan project baru, konfigurasi database, instalasi dan konfigurasi authentication menggunakan Laravel UI dengan framework Bootstrap, 
+                    kustomisasi tabel <code>users</code> melalui migration, pengisian data awal menggunakan seeder, hingga penerapan <em>templating</em> menggunakan template SB Admin 2. 
+                    Selain itu juga diimplementasikan fitur manajemen users yang mencakup operasi CRUD (Create, Read, Update, Delete) secara penuh.
+                </p>
+                <a href="https://github.com/PAJILAPIP/portofolio" class="btn btn-light px-4 mb-3">
+                    <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Membuat project Laravel baru menggunakan Composer atau Laravel Installer.</li>
+                    <li>Mengkonfigurasi koneksi database pada file <code>.env</code>.</li>
+                    <li>Menginstal dan mengkonfigurasi package <strong>Laravel UI</strong> untuk scaffolding authentication.</li>
+                    <li>Men-generate fitur authentication lengkap (login, register, forgot password) menggunakan Bootstrap.</li>
+                    <li>Mengkustomisasi tabel <code>users</code> dengan menambahkan kolom baru melalui migration.</li>
+                    <li>Membuat seeder untuk mengisi data user admin awal ke database.</li>
+                    <li>Menerapkan <em>templating</em> menggunakan template SB Admin 2 pada tampilan aplikasi.</li>
+                    <li>Membuat layout global (<code>main.blade.php</code>) dengan komponen sidebar dan topbar menggunakan <code>@include</code>.</li>
+                    <li>Mengimplementasikan fitur Manajemen Users dengan operasi CRUD (Create, Read, Update, Delete) lengkap.</li>
+                    <li>Memahami cara kerja Resource Controller dan Resource Route dalam Laravel.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>XAMPP (PHP & MySQL)</li>
+                            <li>Visual Studio Code</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Composer (Dependency Manager)</li>
+                            <li>Node.js & NPM</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Membuat Project Laravel</h3>
+                    <p>Terdapat dua cara untuk membuat project Laravel baru. Cara pertama menggunakan <strong>Global Installer Laravel</strong>. Pertama, install installer Laravel secara global dengan perintah:</p>
+                    <code>composer global require "laravel/installer"</code>
+                    <p>Setelah installer terpasang, buat project baru dengan perintah:</p>
+                    <code>laravel new laravel-sisfo</code>
+                    <p>Cara kedua langsung menggunakan <strong>Composer</strong> tanpa perlu install installer global terlebih dahulu:</p>
+                    <code>composer create-project laravel/laravel=^9.0 laravel-sisfo --prefer-dist</code>
+                    <p>Setelah project berhasil dibuat, masuk ke folder project dan jalankan server development Laravel dengan perintah:</p>
+                    <code>php artisan serve</code>
+                    <p>Jika berhasil, aplikasi Laravel dapat diakses di browser pada alamat <code>http://127.0.0.1:8000</code> dan akan menampilkan halaman utama Laravel default.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/1.png" alt="Screenshot 1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Konfigurasi Database</h3>
+                    <p>Sebelum memulai pengembangan, koneksi database perlu dikonfigurasi di file <code>.env</code> yang terletak di root project Laravel. File ini menyimpan variabel lingkungan aplikasi termasuk kredensial database.</p>
+                    <code>DB_CONNECTION=mysql</code> <br>
+                    <code>DB_HOST=127.0.0.1</code> <br>
+                    <code>DB_PORT=3306</code> <br>
+                    <code>DB_DATABASE=laravel_sisfo</code> <br>
+                    <code>DB_USERNAME=root</code> <br>
+                    <code>DB_PASSWORD=</code>
+                    <p>Konfigurasi ini memberitahu Laravel agar terhubung ke database MySQL bernama <code>laravel_sisfo</code> yang berjalan di localhost melalui port 3306 dengan username <code>root</code> dan tanpa password (sesuai konfigurasi XAMPP default).</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/2.png" alt="Screenshot 2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. User Authentication</h3>
+                    <p>Laravel menyediakan scaffolding authentication yang dapat di-generate secara otomatis menggunakan package <strong>Laravel UI</strong>.</p>
+
+                    <p><strong>Install package Laravel/UI</strong></p>
+                    <p>Jalankan perintah berikut untuk menginstal package Laravel UI ke dalam project:</p>
+                    <code>composer require laravel/ui</code>
+                    <p>Package ini menambahkan kemampuan untuk men-generate tampilan dan controller authentication secara otomatis menggunakan berbagai frontend framework.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/3.png" alt="Screenshot 3">
+                    </div>
+
+                    <p><strong>Generate Authentication Scaffolding</strong></p>
+                    <p>Setelah package terinstal, jalankan perintah berikut untuk men-generate seluruh scaffolding authentication sekaligus menggunakan Bootstrap sebagai framework CSS-nya:</p>
+                    <code>php artisan ui bootstrap --auth</code>
+                    <p>Perintah ini secara otomatis men-generate controller authentication (LoginController, RegisterController, ForgotPasswordController, dll.), view untuk halaman login, register, dan forgot password, serta layout <code>app.blade.php</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/4.png" alt="Screenshot 4">
+                    </div>
+
+                    <p><strong>Install dan Compile Asset</strong></p>
+                    <p>Jalankan perintah berikut untuk menginstal seluruh dependensi JavaScript dan mengkompilasi file aset (CSS dan JS) dari scaffolding yang baru saja di-generate:</p>
+                    <code>npm install && npm run dev</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/5.png" alt="Screenshot 5">
+                    </div>
+
+                    <p><strong>Migration Authentication</strong></p>
+                    <p>Jalankan migration untuk membuat tabel-tabel yang dibutuhkan oleh sistem authentication, termasuk tabel <code>users</code>, <code>password_resets</code>, dan <code>personal_access_tokens</code>:</p>
+                    <code>php artisan migrate</code>
+                    <p>Jika database <code>laravel_sisfo</code> belum ada, Laravel akan menampilkan konfirmasi untuk membuatkannya secara otomatis. Setelah migration berhasil, aplikasi sudah memiliki halaman login di <code>/login</code> dan halaman register di <code>/register</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/6.png" alt="Screenshot 6">
+                        <img src="./ss/10/6-1.png" alt="Screenshot 6-1">
+                        <img src="./ss/10/6-2.png" alt="Screenshot 6-2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Custom Table Users</h3>
+                    <p>Tabel <code>users</code> yang di-generate Laravel secara default hanya memiliki kolom <code>id</code>, <code>name</code>, <code>email</code>, <code>password</code>, dan beberapa kolom bawaan lainnya. Untuk kebutuhan aplikasi Sisfo, perlu ditambahkan tiga kolom baru: <code>username</code>, <code>level</code>, dan <code>status</code>.</p>
+                    <p>Buat file migration baru khusus untuk memodifikasi tabel users yang sudah ada:</p>
+                    <code>php artisan make:migration costum_table_users</code>
+                    <p>Perintah ini membuat file migration baru di folder <code>database/migrations</code>. Berbeda dengan migration <em>create</em>, migration ini menggunakan <code>Schema::table()</code> (bukan <code>Schema::create()</code>) karena hanya menambahkan kolom pada tabel yang sudah ada. Kolom yang ditambahkan adalah:</p>
+                    <ul>
+                        <li><code>username</code> — bertipe string dan bersifat unik, digunakan sebagai identitas login alternatif.</li>
+                        <li><code>level</code> — bertipe string, menyimpan peran pengguna dalam sistem (disimpan dalam format JSON seperti <code>["ADMIN"]</code>).</li>
+                        <li><code>status</code> — bertipe enum dengan dua nilai yang diizinkan: <code>ACTIVE</code> atau <code>INACTIVE</code>, untuk mengelola keaktifan akun.</li>
+                    </ul>
+                    <p>Setelah mendefinisikan kolom baru di method <code>up()</code> dan perintah rollback di method <code>down()</code>, jalankan migration:</p>
+                    <code>php artisan migrate</code>
+                    <p>Jika berhasil, struktur tabel <code>users</code> akan bertambah tiga kolom baru sesuai yang didefinisikan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/7.png" alt="Screenshot 7">
+                        <img src="./ss/10/7-1.png" alt="Screenshot 7-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>5. Seeding User Admin</h3>
+                    <p>Seeder digunakan untuk mengisi data awal ke database secara programatik. Pada tahap ini dibuat seeder khusus untuk mengisi akun administrator pertama:</p>
+                    <code>php artisan make:seeder AdminSeeder</code>
+                    <p>File <code>AdminSeeder.php</code> dibuat di folder <code>database/seeders</code>. Di dalam method <code>run()</code>, dibuat instance model <code>User</code> dan setiap propertinya diisi secara langsung. Password dienkripsi menggunakan <code>\Hash::make()</code> sehingga tidak tersimpan dalam bentuk plain text di database. Kolom <code>level</code> disimpan dalam format JSON menggunakan <code>json_encode(["ADMIN"])</code> karena satu user dapat memiliki lebih dari satu level.</p>
+                    <p>Untuk menjalankan seeder secara spesifik tanpa harus menjalankan semua seeder, gunakan flag <code>--class</code>:</p>
+                    <code>php artisan db:seed --class=AdminSeeder</code>
+                    <p>Jika berhasil, terminal akan menampilkan pesan konfirmasi dan akun admin dapat digunakan untuk login ke aplikasi.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/8.png" alt="Screenshot 8">
+                        <img src="./ss/10/8-1.png" alt="Screenshot 8-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>6. Templating dengan SB Admin 2</h3>
+                    <p>Setelah authentication berfungsi, tampilan aplikasi dikustomisasi menggunakan template <strong>SB Admin 2</strong> yang berbasis Bootstrap. Template ini diunduh dari <code>https://startbootstrap.com/theme/sb-admin-2</code>, diekstrak, lalu seluruh isinya di-copy ke folder <code>public/sbadmin</code> di dalam project Laravel agar dapat diakses melalui helper <code>asset()</code>.</p>
+
+                    <p><strong>Halaman Login (<code>app.blade.php</code>)</strong></p>
+                    <p>File <code>resources/views/layouts/app.blade.php</code> yang sebelumnya menjadi layout default authentication diganti total dengan template login dari SB Admin 2. File ini memuat aset CSS dan JS SB Admin 2 menggunakan helper <code>{{ asset('sbadmin/...') }}</code> sehingga tampilannya berubah dari login Bootstrap default menjadi halaman login bergaya admin panel dengan latar warna biru gradasi.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/9.png" alt="Screenshot 9">
+                    </div>
+
+                    <p><strong>Layout Global (<code>main.blade.php</code>)</strong></p>
+                    <p>Karena <code>app.blade.php</code> sudah dialokasikan untuk halaman login, dibuat layout baru bernama <code>main.blade.php</code> di folder <code>resources/views/layouts</code>. Layout ini berfungsi sebagai template induk untuk semua halaman dalam aplikasi setelah login. Dua komponen penting dipanggil menggunakan direktif <code>@include</code>:</p>
+                    <code>@include("layouts.sidebar")</code> &nbsp; (memuat komponen sidebar kiri) <br>
+                    <code>@include("layouts.topbar")</code> &nbsp; (memuat komponen navbar atas)
+                    <p>Layout ini juga menyediakan dua blok <code>@yield</code> untuk diisi oleh view yang menggunakannya: <code>@yield('judul')</code> untuk judul halaman dan <code>@yield('konten')</code> untuk konten utama halaman tersebut.</p>
+
+                    <p><strong>Sidebar (<code>sidebar.blade.php</code>)</strong></p>
+                    <p>Dibuat file <code>resources/views/layouts/sidebar.blade.php</code> yang berisi kode HTML untuk panel navigasi kiri bergaya SB Admin 2. Sidebar ini menampilkan brand aplikasi (Sisfo) dan daftar menu navigasi.</p>
+
+                    <p><strong>Topbar (<code>topbar.blade.php</code>)</strong></p>
+                    <p>Dibuat file <code>resources/views/layouts/topbar.blade.php</code> yang berisi navbar bagian atas. Topbar menampilkan nama pengguna yang sedang login menggunakan <code>{{ Auth::user()->name }}</code> dan menyediakan dropdown menu dengan opsi Profile, Settings, dan Logout. Tombol Logout memanggil route <code>logout</code> dengan method POST agar aman dari serangan CSRF.</p>
+
+                    <p><strong>Cara Menggunakan Layout Main</strong></p>
+                    <p>Setiap view yang ingin menggunakan layout main cukup menambahkan direktif berikut di awal file:</p>
+                    <code>@extends('layouts.main')</code> <br>
+                    <code>@section("judul") Nama Halaman @endsection</code> <br>
+                    <code>@section('konten') ... konten halaman ... @endsection</code>
+                    <p>Dengan pola ini, setiap halaman hanya perlu mendefinisikan judul dan kontennya — sidebar, topbar, dan footer sudah otomatis diwarisi dari layout main.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/10.png" alt="Screenshot 10">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>7. Manajemen Users (CRUD)</h3>
+                    <p>Fitur manajemen users dibuat menggunakan <strong>Resource Controller</strong> yang secara otomatis menyediakan tujuh method CRUD sekaligus:</p>
+                    <code>php artisan make:controller UserController --resource</code>
+                    <p>Route resource didaftarkan di <code>routes/web.php</code> sehingga semua endpoint CRUD untuk users langsung tersedia:</p>
+                    <code>Route::resource('users', UserController::class);</code>
+                    <p>Untuk melihat semua route yang terdaftar beserta HTTP method dan action-nya:</p>
+                    <code>php artisan route:list</code>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/11.png" alt="Screenshot 11">
+                    </div>
+
+                    <p><strong>CREATE USER</strong></p>
+                    <p>Method <code>create()</code> pada UserController mengembalikan view form tambah user. Form ini memiliki field Nama, Email, Username, Password, dan Level (menggunakan Select2 untuk multiple select). 
+                    Library Select2 ditambahkan ke <code>main.blade.php</code> via CDN agar dropdown level dapat dipilih lebih dari satu nilai sekaligus.</p>
+                    <p>Method <code>store()</code> menangkap data dari form menggunakan <code>$request->get('nama_input')</code>, membuat instance model User baru, mengisi setiap propertinya, mengenkripsi password dengan <code>\Hash::make()</code>, menyimpan level dalam format JSON, lalu memanggil <code>$user->save()</code> untuk menyimpan ke database. Jika berhasil, pengguna di-redirect ke halaman index users dengan membawa pesan sukses melalui session.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/12.png" alt="Screenshot 12">
+                    </div>
+
+                    <p><strong>READ / LIST USERS</strong></p>
+                    <p>Method <code>index()</code> mengambil semua data user dengan <code>\App\Models\User::all()</code> dan mengirimkannya ke view <code>users.index</code>. 
+                    View ini menampilkan data dalam tabel yang dilengkapi dengan DataTables untuk fitur pencarian, pengurutan, dan paginasi secara otomatis. 
+                    File CSS dan JS DataTables ditambahkan ke layout <code>main.blade.php</code>. Tombol "Tambah User" mengarahkan pengguna ke form create menggunakan <code>route('users.create')</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/13.png" alt="Screenshot 13">
+                    </div>
+
+                    <p><strong>UPDATE USER</strong></p>
+                    <p>Tombol Edit pada setiap baris tabel mengarahkan ke route <code>users.edit</code> yang membawa ID user. Method <code>edit($id)</code> mengambil data user berdasarkan ID menggunakan <code>\App\Models\User::findOrFail($id)</code> — jika ID tidak ditemukan akan otomatis mengembalikan response 404. Data user dikirim ke view <code>user.edit</code> untuk ditampilkan pada form edit.</p>
+                    <p>Form edit menggunakan method POST dengan tambahan input hidden <code>_method = PUT</code> karena HTML form tidak mendukung method PUT secara langsung. Nilai setiap field diisi dari data user yang ada. Untuk kolom level, kondisi <code>in_array()</code> digunakan untuk menandai opsi yang sudah terpilih sebelumnya. Method <code>update()</code> menyimpan perubahan dengan cara yang sama seperti <code>store()</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/14.png" alt="Screenshot 14">
+                        <img src="./ss/10/14-1.png" alt="Screenshot 14-1">
+                    </div>
+
+                    <p><strong>DELETE USER</strong></p>
+                    <p>Tombol Hapus pada setiap baris tabel menggunakan form HTML dengan method POST dan input hidden <code>_method = DELETE</code>. Atribut <code>onsubmit="return confirm('...')"</code> menampilkan dialog konfirmasi sebelum data benar-benar dihapus. Method <code>destroy($id)</code> mencari user berdasarkan ID, memanggil <code>$user->delete()</code> untuk menghapus dari database, lalu me-redirect kembali ke halaman index dengan pesan sukses.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/15.png" alt="Screenshot 15">
+                        <img src="./ss/10/15-1.png" alt="Screenshot 15-1">
+                    </div>
+
+                    <p><strong>Menambahkan Menu Users di Sidebar</strong></p>
+                    <p>Agar menu Users dapat diakses dari sidebar, tambahkan item navigasi baru ke file <code>resources/views/layouts/sidebar.blade.php</code> menggunakan helper route <code>route('users.index')</code> beserta ikon Font Awesome yang sesuai.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/10/16.png" alt="Screenshot 16">
+                    </div>
+                </div>
+
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                <p class="mb-0">
+                    Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa Laravel menyediakan ekosistem yang lengkap untuk membangun aplikasi web secara cepat dan terstruktur. 
+                    Package <strong>Laravel UI</strong> memungkinkan developer men-generate seluruh scaffolding authentication — mencakup controller, view, dan route — hanya dengan satu perintah, sehingga menghemat waktu pengembangan secara signifikan. 
+                    Sistem migration Laravel juga terbukti fleksibel; tidak hanya untuk membuat tabel baru, tetapi juga untuk memodifikasi tabel yang sudah ada seperti yang dilakukan pada kustomisasi tabel <code>users</code>.
+                    Pada sisi tampilan, penerapan <em>templating</em> menggunakan SB Admin 2 menunjukkan bagaimana Blade Layout dengan direktif <code>@extends</code>, <code>@yield</code>, <code>@section</code>, dan <code>@include</code> dapat memisahkan komponen tampilan secara rapi sehingga mudah dipelihara dan dikembangkan lebih lanjut. 
+                    Implementasi Resource Controller juga mempercepat pembuatan fitur CRUD karena tujuh method standar sudah tersedia secara otomatis dan dapat langsung diisi dengan logika bisnis yang dibutuhkan.
+                </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
