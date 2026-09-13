@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Aplikasi Mobile - Input Widgets dan Basic Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 1: Input Widgets dan Basic Form (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Flutter menyediakan berbagai widget inputan (Basic Form) yang berfungsi untuk menerima nilai dari pengguna, seperti <code>TextField</code>, <code>TextFormField</code>, <code>CheckBox</code>, <code>Switch</code>, <code>Dropdown</code>, <code>Radio</code>, <code>Dialog</code>, <code>DatePicker</code>, <code>BottomSheet</code>, dan <code>Snackbar</code>. 
+                    Widget-widget ini digunakan untuk menampilkan tampilan inputan, memvalidasi apakah inputan sudah sesuai dengan aturan yang ditetapkan, kemudian mengambil nilai inputan tersebut setelah proses pengecekan selesai dilakukan.
+                    <br><br>
+                    Pada praktikum ini, mahasiswa mempelajari perbedaan antara <strong>TextField</strong> dan <strong>TextFormField</strong>. <code>TextField</code> merupakan widget dasar untuk menerima input teks dari keyboard, sedangkan <code>TextFormField</code> merupakan versi lengkap dari <code>TextField</code> yang sudah terintegrasi dengan logika validasi dan manajemen state melalui <code>Form</code> dan <code>GlobalKey&lt;FormState&gt;</code>. 
+                    Selain itu, dipelajari pula konsep <code>TextEditingController</code> untuk mengambil nilai inputan, method <code>validate()</code> untuk menjalankan validasi pada seluruh <code>TextFormField</code>, method <code>setState()</code> untuk memperbarui tampilan, serta penggunaan kata kunci <code>const</code> untuk meningkatkan performa aplikasi.
+                </p>
+                <a href="https://github.com/PAJILAPIP/portofolio" class="btn btn-light px-4 mb-3">
+                    <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu membuat basic form untuk menerima inputan dari keyboard.</li>
+                    <li>Mahasiswa mampu membuat beberapa jenis input widgets, yaitu <code>TextField</code> dan <code>TextFormField</code>.</li>
+                    <li>Mahasiswa mampu membuat dan mengontrol inputan dari user menggunakan <code>TextEditingController</code>.</li>
+                    <li>Mahasiswa mampu membuat validasi inputan menggunakan property <code>validator</code> pada <code>TextFormField</code>.</li>
+                    <li>Mahasiswa mampu menggunakan <code>GlobalKey&lt;FormState&gt;</code> dan method <code>validate()</code> untuk mengelola validasi form secara kolektif.</li>
+                    <li>Mahasiswa mampu menampilkan hasil inputan menggunakan widget <code>SnackBar</code>.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK</li>
+                            <li>Visual Studio Code</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Browser (Chrome) untuk menjalankan aplikasi</li>
+                            <li>Project Flutter</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Basic Form TextField</h3>
+                    <p>Pada langkah ini dibuat sebuah basic form menggunakan widget <code>TextField</code> untuk menerima inputan nama, dan <code>ElevatedButton</code> sebagai pemicu event.</p>
+
+                    <p><strong>A. Membuat File Dart Baru</strong></p>
+                    <p>Buat file dart baru dengan nama <code>form-textfield</code> di dalam folder <code>lib</code>, kemudian buat tampilan awal menggunakan <code>Text</code>, <code>SizedBox</code> untuk memberi jarak antar widget, <code>TextField</code> untuk menerima inputan, dan <code>ElevatedButton</code> untuk memberikan event listener.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/1.png" alt="Screenshot 1-1">
+                    </div>
+
+                    <p><strong>B. Menambahkan TextEditingController</strong></p>
+                    <p>Pada class <code>_MyFormState</code> ditambahkan variabel <code>_textEditingController</code> bertipe <code>TextEditingController</code> yang berfungsi untuk mengambil inputan dari user. Method <code>dispose()</code> digunakan untuk membersihkan (menghapus) controller dari memori ketika widget sudah tidak digunakan lagi, agar tidak terjadi kebocoran memori (<em>memory leak</em>).</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/1-2.png" alt="Screenshot 1-2">
+                    </div>
+
+                    <p><strong>C. Menambahkan Property pada Widget TextField</strong></p>
+                    <p>Widget <code>TextField</code> ditambahkan beberapa property, yaitu <code>controller: _textEditingController</code> agar nilai inputan dapat diambil, <code>keyboardType: TextInputType.text</code> untuk menentukan jenis inputan yang boleh dimasukkan oleh user, serta <code>onChanged</code> yang berfungsi sebagai <em>event listener</em> untuk menjalankan sebuah fungsi setiap kali pengguna sedang mengetikkan teks.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/1-3.png" alt="Screenshot 1-3">
+                    </div>
+
+                    <p><strong>D. Menambahkan Aksi pada ElevatedButton</strong></p>
+                    <p>Pada property <code>onPressed</code> milik <code>ElevatedButton</code> ditambahkan variabel <code>inputText</code> yang berfungsi menampung nilai inputan dari <code>_textEditingController.text</code>, kemudian nilai tersebut ditampilkan menggunakan widget <code>ScaffoldMessenger</code> dan <code>SnackBar</code> yang muncul di bagian bawah layar.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/1-4.png" alt="Screenshot 1-4">
+                    </div>
+
+                    <p>Setelah seluruh kode program selesai ditambahkan, simpan file kemudian jalankan aplikasi dengan perintah <code>flutter run</code> atau melalui tombol Run pada Visual Studio Code.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/1-5.png" alt="Screenshot 1-5">
+                        <img src="./ss/1/1-5-1.png" alt="Screenshot 1-5">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Basic Form TextFormField</h3>
+                    <p>Pada langkah ini dibuat basic form menggunakan 2 buah widget <code>TextFormField</code> (nama dan email) yang dilengkapi dengan validasi, serta 1 buah <code>ElevatedButton</code> untuk melakukan submit.</p>
+
+                    <p><strong>A. Membuat File Dart Baru</strong></p>
+                    <p>Buat file baru di dalam folder <code>lib</code> dengan nama <code>form-textformfield</code>, kemudian buat tampilan awal menggunakan 2 buah widget <code>TextFormField</code> dan 1 buah <code>ElevatedButton</code> yang dibungkus dengan widget <code>Column</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/2-1.png" alt="Screenshot 2-1">
+                    </div>
+
+                    <p><strong>B. Menambahkan GlobalKey, Controller, dan Method Submit</strong></p>
+                    <p>Pada class <code>_MyFormTextState</code> ditambahkan variabel <code>_formKey</code> bertipe <code>GlobalKey&lt;FormState&gt;</code> yang berfungsi untuk mengidentifikasi dan mengakses status form (<code>FormState</code>) secara global dari luar widget, misalnya dari dalam <code>onPressed</code>. 
+                    Ditambahkan juga <code>_nameController</code> dan <code>_emailController</code> untuk menampung inputan nama dan email, method <code>dispose()</code> untuk membersihkan kedua controller, serta method <code>_submitForm()</code> yang akan memanggil <code>_formKey.currentState!.validate()</code> untuk menjalankan validasi pada seluruh <code>TextFormField</code> di dalam form. 
+                    Jika seluruh validator mengembalikan nilai <code>null</code> (tidak ada error), maka <code>validate()</code> akan mengembalikan nilai <code>true</code> dan nilai inputan akan ditampilkan melalui <code>SnackBar</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/2-2.png" alt="Screenshot 2-2">
+                    </div>
+
+                    <p><strong>C. Membungkus Tampilan dengan Widget Form</strong></p>
+                    <p>Tampilan yang sebelumnya menggunakan <code>Column</code> dibungkus dengan widget <code>Form</code> dan diberikan property <code>key: _formKey</code>, agar <code>FormState</code> dapat diakses dan divalidasi melalui <code>_formKey</code> tersebut.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/2-3.png" alt="Screenshot 2-3">
+                    </div>
+
+                    <p><strong>D. Menambahkan Validator pada TextFormField</strong></p>
+                    <p>Widget <code>TextFormField</code> nama diberikan <code>controller: _nameController</code> dan property <code>validator</code> yang akan mengembalikan pesan <em>"Masukkan nama anda"</em> apabila nilai inputan kosong atau bernilai <code>null</code>. 
+                    Widget <code>TextFormField</code> email diberikan <code>controller: _emailController</code> dan <code>validator</code> yang memeriksa apakah inputan kosong, serta memeriksa apakah inputan mengandung karakter <code>@</code> menggunakan <code>value.contains('@')</code> untuk memastikan format email valid.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/2-4.png" alt="Screenshot 2-4">
+                    </div>
+
+                    <p><strong>E. Menghubungkan Tombol dengan Method Submit</strong></p>
+                    <p>Property <code>onPressed</code> pada <code>ElevatedButton</code> diarahkan untuk memanggil method <code>_submitForm</code>, sehingga ketika tombol Submit ditekan, seluruh proses validasi dan penampilan hasil inputan akan dijalankan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/2-5.png" alt="Screenshot 2-5">
+                    </div>
+
+                    <p>Setelah semua langkah selesai, simpan file kemudian jalankan aplikasi dengan perintah <code>flutter run</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/2-6.png" alt="Screenshot 2-6">
+                        <img src="./ss/1/2-6-1.png" alt="Screenshot 2-6">
+                    </div>
+                </div>
+            </section>
+
+            <section id="tugas">
+                <h2 class="section-title text-light">Tugas: Form Pendaftaran Pengguna</h2>
+                <p class="text-laprak">
+                    Tugas Kelas B pada praktikum ini adalah membuat form pendaftaran pengguna yang terdiri dari 4 buah inputan, yaitu <strong>Nama</strong>, <strong>Email</strong>, <strong>Password</strong>, <strong>Confirm Password</strong>, dan 1 buah tombol Submit. 
+                    Tugas ini dibuat dalam 2 buah file dart, yaitu <code>main.dart</code> sebagai file utama aplikasi dan <code>user_registration_form.dart</code> sebagai file yang berisi tampilan dan logika form pendaftaran.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. File main.dart</h3>
+                    <p>File ini merupakan titik masuk (<em>entry point</em>) dari aplikasi Flutter yang dijalankan pertama kali oleh fungsi <code>main()</code> melalui <code>runApp(const MyApp())</code>.</p>
+                    <ul>
+                        <li><strong><code>MyApp</code></strong> — Merupakan <code>StatelessWidget</code> yang menjadi root aplikasi karena tampilannya tidak memiliki state yang berubah.</li>
+                        <li><strong><code>MaterialApp</code></strong> — Digunakan sebagai widget utama yang membungkus seluruh aplikasi, memberikan tema Material Design, dan mengatur properti seperti <code>title</code> dan <code>theme</code>.</li>
+                        <li><strong><code>title: 'Tugas Kelas B'</code></strong> — Judul aplikasi yang akan tampil pada task manager perangkat.</li>
+                        <li><strong><code>theme: ThemeData(primarySwatch: Colors.blue)</code></strong> — Mengatur warna utama (tema) aplikasi menjadi warna biru.</li>
+                        <li><strong><code>home: const UserRegistrationForm()</code></strong> — Menentukan halaman pertama yang akan ditampilkan ketika aplikasi dijalankan, yaitu widget <code>UserRegistrationForm</code> yang berada pada file <code>user_registration_form.dart</code>.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/1/tugas-1.png" alt="Screenshot Tugas main.dart">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. File user_registration_form.dart</h3>
+                    <p>File ini berisi implementasi form pendaftaran menggunakan <code>StatefulWidget</code> karena tampilannya perlu berubah (menampilkan pesan error atau <code>SnackBar</code>) sesuai dengan interaksi pengguna.</p>
+
+                    <p><strong>1. Deklarasi Key dan Controller</strong></p>
+                    <p>Variabel <code>_formKey</code> bertipe <code>GlobalKey&lt;FormState&gt;</code> dideklarasikan untuk mengakses <code>FormState</code> secara global. Empat buah <code>TextEditingController</code>, yaitu <code>_nameController</code>, <code>_emailController</code>, <code>_passwordController</code>, dan <code>_confirmPasswordController</code>, dideklarasikan untuk menampung nilai inputan dari masing-masing <code>TextFormField</code>.</p>
+
+                    <p><strong>2. Method dispose()</strong></p>
+                    <p>Method ini dipanggil secara otomatis ketika widget dihancurkan. Di dalamnya, keempat controller di atas dibersihkan menggunakan method <code>dispose()</code> masing-masing untuk mencegah kebocoran memori, kemudian diakhiri dengan pemanggilan <code>super.dispose()</code>.</p>
+
+                    <p><strong>3. Method _submitForm()</strong></p>
+                    <p>Method ini dipanggil ketika tombol Submit ditekan. Method akan memeriksa <code>_formKey.currentState!.validate()</code> terlebih dahulu; apabila seluruh <code>validator</code> pada <code>TextFormField</code> mengembalikan nilai <code>null</code> (valid), maka nilai <code>name</code> diambil dari <code>_nameController.text</code> dan ditampilkan pesan <em>"Pendaftaran berhasil untuk $name!"</em> menggunakan <code>ScaffoldMessenger</code> dan <code>SnackBar</code>.</p>
+
+                    <p><strong>4. Widget Form dan TextFormField</strong></p>
+                    <p>Seluruh inputan dibungkus dengan widget <code>Form</code> yang diberikan <code>key: _formKey</code>, kemudian di dalamnya digunakan <code>ListView</code> agar tampilan dapat di-scroll apabila keyboard menutupi sebagian layar. Berikut penjelasan validasi pada setiap field:</p>
+                    <ul>
+                        <li><strong>Nama Lengkap</strong> — Menggunakan <code>controller: _nameController</code>. Validator akan mengembalikan pesan <em>"Masukkan nama anda"</em> apabila nilai inputan kosong atau <code>null</code>.</li>
+                        <li><strong>Email</strong> — Menggunakan <code>controller: _emailController</code> dengan <code>keyboardType: TextInputType.emailAddress</code>. Validator memeriksa apakah inputan kosong, kemudian memeriksa apakah inputan mengandung karakter <code>@</code> menggunakan <code>value.contains('@')</code>; jika tidak, akan muncul pesan <em>"Email tidak valid (harus mengandung @)"</em>.</li>
+                        <li><strong>Password</strong> — Menggunakan <code>controller: _passwordController</code> dengan property <code>obscureText: true</code> agar teks yang diketik tersembunyi (berbentuk titik-titik). Validator memastikan inputan tidak boleh kosong.</li>
+                        <li><strong>Confirm Password</strong> — Menggunakan <code>controller: _confirmPasswordController</code> dengan <code>obscureText: true</code>. Validator memeriksa apakah inputan kosong, kemudian membandingkan nilainya dengan <code>_passwordController.text</code> menggunakan kondisi <code>value != _passwordController.text</code>; apabila berbeda, akan muncul pesan <em>"Password dan Confirm Password tidak sama"</em>.</li>
+                    </ul>
+
+                    <p><strong>5. Tombol Submit</strong></p>
+                    <p>Widget <code>SizedBox</code> dengan <code>width: double.infinity</code> digunakan agar tombol <code>ElevatedButton</code> memenuhi lebar layar. Property <code>onPressed</code> pada tombol ini diarahkan untuk memanggil method <code>_submitForm</code>, sehingga proses validasi dan penampilan pesan sukses akan dijalankan ketika tombol ditekan.</p>
+
+                    <div class="img-placeholder">
+                        <img src="./ss/1/tugas-2.png" alt="Screenshot Tugas form kosong">
+                        <img src="./ss/1/tugas-3.png" alt="Screenshot Tugas validasi email">
+                        <img src="./ss/1/tugas-4.png" alt="Screenshot Tugas validasi confirm password">
+                        <img src="./ss/1/tugas-5.png" alt="Screenshot Tugas berhasil submit">
+                        <img src="./ss/1/tugas-6.png" alt="Screenshot user_registration_form.dart">
+                    </div>
+
+                    <a href="https://github.com/PAJILAPIP/PrakAppMob_B_2411531008" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                    </a>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa Flutter menyediakan dua jenis widget inputan utama, yaitu <code>TextField</code> yang bersifat sederhana untuk menerima input teks, dan <code>TextFormField</code> yang sudah terintegrasi dengan sistem validasi melalui widget <code>Form</code>. 
+                        Penggunaan <code>TextEditingController</code> memungkinkan nilai inputan diambil dan diproses lebih lanjut, sedangkan <code>GlobalKey&lt;FormState&gt;</code> beserta method <code>validate()</code> memungkinkan validasi dijalankan secara kolektif terhadap seluruh field dalam satu form hanya dengan satu kali pemanggilan. 
+                        Pada tugas pembuatan form pendaftaran pengguna, keempat prinsip tersebut diterapkan untuk memvalidasi nama, email (harus mengandung karakter <code>@</code>), serta kecocokan antara password dan confirm password. 
+                        Dengan memahami konsep basic form ini, mahasiswa dapat membangun form inputan pada aplikasi Flutter yang lebih terstruktur, aman, dan mudah untuk divalidasi.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
