@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Aplikasi Mobile - Pengenalan Widgets</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 2: Pengenalan Widgets - Stateless, Stateful, dan Manajemen State Dasar (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Flutter adalah framework untuk membangun aplikasi mobile yang seluruh tampilannya disusun dari <em>widget</em>. Widget merupakan blok penyusun antarmuka (UI), mulai dari teks, ikon, tombol, hingga tata letak seperti <code>Row</code> dan <code>Column</code>. Kerangka dasar sebuah aplikasi Flutter terdiri dari <code>MaterialApp</code> yang memberikan tema dan pengaturan aplikasi bergaya Material Design, serta <code>Scaffold</code> yang menyediakan struktur halaman seperti <code>AppBar</code> dan <code>body</code>.
+                    <br><br>
+                    Pada praktikum ini, mahasiswa mempelajari perbedaan antara <strong>Stateless Widget</strong> dan <strong>Stateful Widget</strong>. <code>StatelessWidget</code> adalah widget statis yang tampilannya tidak berubah setelah dirender, tidak memiliki data internal yang berubah, serta lebih ringan dan cepat. Sebaliknya, <code>StatefulWidget</code> adalah widget dinamis yang menyimpan data internal (<em>state</em>) sehingga tampilannya dapat berubah sebagai respons terhadap interaksi pengguna. Perubahan state dilakukan melalui fungsi <code>setState()</code> yang memberi tahu Flutter agar UI dirender ulang. Sebagai studi kasus dibuat sebuah tampilan dashboard <em>Expense Tracker</em> sederhana yang terdiri dari sapaan pengguna (Stateless) dan kartu saldo yang dapat disensor dengan menekan ikon mata (Stateful).
+                </p>
+                <a href="https://github.com/PAJILAPIP/PrakAppMob_B_2411531008" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu memahami kerangka dasar aplikasi Flutter, yaitu <code>MaterialApp</code> dan <code>Scaffold</code>.</li>
+                    <li>Mahasiswa mampu membedakan penggunaan <code>StatelessWidget</code> dan <code>StatefulWidget</code>.</li>
+                    <li>Mahasiswa mampu menerapkan fungsi <code>setState()</code> untuk membuat UI yang interaktif.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK</li>
+                            <li>Code Editor: Visual Studio Code atau Android Studio</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Emulator / Device untuk menjalankan aplikasi</li>
+                            <li>Project Flutter</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Membuat Widget Sapaan (Stateless)</h3>
+                    <p>Langkah ini dimulai dengan membuat header statis berupa class <code>GreetingWidget</code> yang <em>extends</em> <code>StatelessWidget</code> 
+                        untuk menampilkan nama pengguna dan ikon avatar. Di dalam method <code>build</code>, tata letak disusun menggunakan <code>Row</code> untuk menyusun elemen dari kiri ke kanan, dipadukan dengan <code>mainAxisAlignment: MainAxisAlignment.spaceBetween</code> agar elemen tersebar ke sisi layar. 
+                        Di dalam <code>Row</code> tersebut, <code>Column</code> digunakan untuk menumpuk teks sapaan ("Halo, Budi!" dan "Selamat datang kembali") secara vertikal dengan posisi rata kiri. Sebagai elemen terakhir di dalam <code>Row</code>, ditambahkan <code>CircleAvatar</code> yang berisi <code>Icon(Icons.person)</code>.
+                    </p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/1.png" alt="Screenshot 1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Membuat Kartu Saldo (Stateful)</h3>
+                    <p>Kartu saldo (Card) ini harus bisa bereaksi saat ikon mata ditekan, sehingga kita wajib menggunakan <code>StatefulWidget</code>. Pembuatannya membutuhkan dua buah class: class <code>BalanceCard</code> yang <em>extends</em> <code>StatefulWidget</code> untuk menginisiasi <em>state</em>, dan class private <code>_BalanceCardState</code> (atau <code>BalanceCardState</code>) yang <em>extends</em> <code>State&lt;BalanceCard&gt;</code> 
+                        sebagai tempat menyimpan logika dan tampilan UI
+                        Di dalam class <em>state</em> tersebut, dideklarasikan variabel penanda (seperti <code>_isObscure</code>) untuk menyimpan status sensor teks, dan variabel <code>_balance</code> untuk menyimpan nilai nominal saldo. Terakhir, disiapkan kerangka method <code>build</code> yang implementasi UI-nya akan dilanjutkan pada langkah berikutnya</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/2.png" alt="Screenshot 2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Menerapkan Interaktivitas (setState)</h3>
+                    <p>Pada langkah ini, UI kartu saldo dibangun di dalam method <code>build</code> menggunakan widget <code>Card</code> dengan latar <code>Colors.blueAccent</code>. Di dalamnya, digunakan <code>Row</code> dengan <code>mainAxisAlignment: MainAxisAlignment.spaceBetween</code> 
+                        untuk menyusun teks nominal di kiri dan tombol ikon di kanan. Teks saldo diatur menggunakan logika ternary <code>_isBalanceVisible ? "Rp *********" : _balance</code> untuk menyensor atau menampilkan nominal asli secara dinamis. Interaktivitas diterapkan melalui <code>IconButton</code> 
+                        yang ikonnya juga berubah antara <code>visibility_off</code> dan <code>visibility</code> sesuai kondisi. Pada properti <code>onPressed</code>, dijalankan <code>setState(() { _isBalanceVisible = !_isBalanceVisible; })</code> yang berfungsi untuk membalik nilai boolean sekaligus memberi tahu Flutter agar merender ulang tampilan UI dengan data terbaru.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/3.png" alt="Screenshot 3">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Hasil Akhir</h3>
+                    <p>Setelah semua langkah dilakukan, aplikasi akan menampilkan tampilan yang sesuai dengan kebutuhan, yaitu widget sapaan dan kartu saldo yang dapat menyembunyikan dan menampilkan nilai saldo berdasarkan interaksi pengguna.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/4.png" alt="Screenshot 4">
+                    </div>
+                </div>
+            </section>
+
+            <section id="tugas">
+                <h2 class="section-title text-light">Tugas</h2>
+                <p class="text-laprak">
+                    Tugas pada praktikum ini ada 2 yaitu: 
+                    <ul>Tugas 1: Styling → Ubah warna tema BalanceCard dari biru (Colors.blueAccent) menjadi
+                        hijau emerald (Colors.teal).</ul>
+                    <ul>
+                        Tugas 2: Modifikasi UI → Tambahkan teks statis berupa "No. Rekening: 1234-5678" di
+                        bagian bawah nominal saldo di dalam kartu.
+                    </ul>
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Styling</h3>
+                    <p>Pada line 108 ada code <code>color: Colors.blueAccent</code> yang nantinya diubah menajadi <code>color: Colors.teal</code> </p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/tugas-1.png" alt="Screenshot Tugas Styling">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Modifikasi UI</h3>
+                    <p>Tambahkan widget teks statis berupa "No. Rekening: 1234-5678" di bagian bawah nominal saldo di dalam kartu. 
+                        Disarankan untuk menambahkan SizedBox sebagai jarak antar teks agar tampilan tetap rapi.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/tugas-2.png" alt="Screenshot Tugas Modifikasi UI">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Sebelum vs Sesudah</h3>
+                    <p></p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/sebelum.png" alt="Screenshot Tugas Modifikasi UI">
+                        <img src="./ss/2/sesudah.png" alt="Screenshot Tugas Modifikasi UI">
+                    </div>
+                    
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa kerangka dasar aplikasi Flutter dibangun dari <code>MaterialApp</code> sebagai pengatur aplikasi dan <code>Scaffold</code> sebagai struktur halaman. 
+                        <code>StatelessWidget</code> digunakan untuk tampilan yang bersifat statis dan tidak berubah, seperti sapaan pengguna, sedangkan <code>StatefulWidget</code> digunakan untuk tampilan dinamis yang menyimpan state, seperti kartu saldo yang dapat disensor. 
+                        Fungsi <code>setState()</code> berperan penting dalam memberi tahu Flutter bahwa data telah berubah sehingga UI dirender ulang sesuai nilai state terbaru. 
+                        Dengan memahami konsep ini, mahasiswa dapat menentukan jenis widget yang tepat serta membangun antarmuka Flutter yang interaktif.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
