@@ -185,6 +185,148 @@
 
         </div>
     </div>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5 mt-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 3: Layouting &amp; Styling Row, Column, Container, dan ListTile (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Layouting adalah proses menyusun dan mengatur posisi widget di layar agar tampilan aplikasi rapi dan mudah dibaca. Di Flutter, tata letak dibangun dari widget-widget dasar seperti <code>Row</code> yang menyusun widget secara menyamping (kiri ke kanan), <code>Column</code> yang menyusun widget secara menurun (atas ke bawah), serta <code>Container</code> yang berfungsi sebagai kotak dengan <em>margin</em>, <em>padding</em>, warna, dan batas (<em>border</em>). Selain itu, Flutter menyediakan <code>ListTile</code>, yaitu widget bawaan Material Design untuk membuat baris daftar yang rapi secara instan dengan tiga bagian utama: <code>leading</code> (elemen paling kiri seperti ikon atau avatar), <code>title</code> (judul utama baris), dan <code>trailing</code> (elemen paling kanan seperti nominal atau tombol).
+                    <br><br>
+                    Pada praktikum ini, mahasiswa melanjutkan aplikasi <em>Expense Tracker</em> dari Praktikum 1 dengan menambahkan komponen baru, yaitu deretan tombol aksi (Pemasukan, Pengeluaran, Transfer) menggunakan <code>Row</code> dan daftar riwayat transaksi menggunakan <code>Column</code> dan <code>ListTile</code>. Properti <code>mainAxisAlignment</code> dan <code>crossAxisAlignment</code> digunakan untuk mengatur perataan elemen, sedangkan <code>Container</code> dengan <code>BoxDecoration</code> digunakan untuk mengatur warna dan bentuk latar. Seluruh komponen kemudian digabungkan ke dalam satu halaman dashboard yang dibungkus <code>SingleChildScrollView</code> agar layar dapat di-scroll ketika isinya memanjang.
+                </p>
+                <a href="https://github.com/PAJILAPIP/PrakAppMob_B_2411531008" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu menerapkan widget <code>Row</code> untuk membuat deretan tombol aksi.</li>
+                    <li>Mahasiswa mampu menerapkan widget <code>Column</code> untuk membuat daftar transaksi.</li>
+                    <li>Mahasiswa mampu mengatur <code>padding</code>, <code>margin</code>, dan warna pada <code>Container</code>.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK</li>
+                            <li>Code Editor: Visual Studio Code atau Android Studio</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Emulator / Device untuk menjalankan aplikasi</li>
+                            <li>Project Flutter</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Menyusun Tombol Aksi (Row)</h3>
+                    <p>Langkah ini dimulai dengan membuat class <code>ActionButtonsWidget</code> yang <em>extends</em> <code>StatelessWidget</code> untuk meletakkan tombol Pemasukan, Pengeluaran, dan Transfer sejajar secara horizontal menggunakan <code>Row</code>. Properti <code>mainAxisAlignment: MainAxisAlignment.spaceEvenly</code> berfungsi mengatur jarak antar elemen, di mana ruang kosong dibagi sama rata di antara ketiga tombol. Setiap tombol dibuat dengan memanggil method pembantu <code>_buildActionButton(icon, label, color)</code> agar kode tidak berulang, dengan parameter ikon (<code>Icons.arrow_downward</code>, <code>Icons.arrow_upward</code>, <code>Icons.swap_horiz</code>), teks label, dan warna (hijau, merah, biru).</p>
+                    <p>Di dalam method <code>_buildActionButton</code>, digunakan <code>Column</code> untuk menumpuk ikon dan label secara vertikal. Ikon dibungkus dengan <code>Container</code> yang diberi <code>padding: const EdgeInsets.all(12)</code> untuk ruang di dalam kotak, serta <code>BoxDecoration</code> dengan <code>color: color.withOpacity(0.2)</code> agar latar berwarna transparan dan <code>borderRadius: BorderRadius.circular(12)</code> agar sudutnya membulat. <code>SizedBox(height: 8)</code> memberi jarak antara ikon dan label, sedangkan <code>fontWeight: FontWeight.w500</code> pada teks membuat label tampil sedikit lebih tebal.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/5.png" alt="Screenshot 1">
+                        <img src="./ss/2/5-1.png" alt="Screenshot 1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Menyusun Riwayat (Column + ListTile)</h3>
+                    <p>Daftar transaksi mengurut ke bawah, sehingga dibuat dalam class <code>RecentTransactionsWidget</code> yang menggunakan <code>Column</code> dengan <code>crossAxisAlignment: CrossAxisAlignment.start</code> agar semua isi rata kiri. Di dalamnya terdapat teks judul <em>"Transaksi Terakhir"</em> dengan <code>fontSize: 18</code> dan <code>FontWeight.bold</code>, diikuti <code>SizedBox(height: 12)</code> sebagai jarak, lalu widget <code>Card</code> dengan <code>elevation: 2</code> dan sudut membulat (<code>RoundedRectangleBorder</code>) agar daftar transaksi memiliki bayangan dan bingkai.</p>
+                    <p>Di dalam <code>Card</code>, digunakan <code>Column</code> lain yang berisi beberapa <code>ListTile</code> berturut-turut. Setiap <code>ListTile</code> memiliki <code>leading</code> berupa <code>CircleAvatar</code> dengan ikon transaksi, <code>title</code> berupa nama transaksi (misalnya <em>"Makan Siang"</em>), <code>subtitle</code> berupa tanggal transaksi, dan <code>trailing</code> berupa nominal transaksi dengan warna sesuai jenisnya. Widget <code>Divider(height: 1)</code> disisipkan di antara item sebagai garis pemisah.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/6.png" alt="Screenshot 2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Integrasi Dashboard (Scrollable)</h3>
+                    <p>Pada langkah ini komponen dari Praktikum 1 (<code>GreetingWidget</code> dan <code>BalanceCardWidget</code>) digabungkan dengan komponen baru (<code>ActionButtonsWidget</code> dan <code>RecentTransactionsWidget</code>) di dalam <code>DashboardScreen</code>. Pada <code>Scaffold</code>, judul <code>AppBar</code> diubah menjadi <em>"Praktikum 2: Layouting"</em>. Bagian <code>body</code> dibungkus dengan <code>SingleChildScrollView</code> untuk mengaktifkan scroll vertikal, sehingga layar tidak mengalami <em>overflow</em> ketika daftar transaksi memanjang. Di dalamnya digunakan <code>Padding</code> dengan <code>EdgeInsets.all(16.0)</code> untuk memberi jarak dari tepi layar, kemudian <code>Column</code> yang menyusun keempat widget dari atas ke bawah, dengan <code>SizedBox(height: 20)</code> sebagai jarak vertikal di antara masing-masing widget.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/7.png" alt="Screenshot 3">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Hasil Akhir</h3>
+                    <p>Setelah semua langkah dilakukan, simpan file <code>lib/main.dart</code> kemudian jalankan aplikasi dengan perintah <code>flutter run</code>. Aplikasi menampilkan sapaan pengguna, kartu saldo yang dapat disensor dengan menekan ikon mata, tiga tombol aksi (Pemasukan, Pengeluaran, Transfer) yang tersusun sejajar, serta daftar "Transaksi Terakhir" yang berisi tiga transaksi. Halaman dapat di-scroll ke bawah apabila isi melebihi tinggi layar.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/8.png" alt="Screenshot 4">
+                    </div>
+                </div>
+            </section>
+
+            <section id="tugas">
+                <h2 class="section-title text-light">Tugas</h2>
+                <p class="text-laprak">
+                    Tugas pada praktikum ini ada 2, yaitu:
+                </p>
+                <ul>
+                    <li><strong>Tugas 1: Styling</strong> — Pada widget Daftar Transaksi (<code>ListTile</code>), ubah warna <code>trailing</code> text pengeluaran menjadi merah dan text pemasukan menjadi hijau.</li>
+                    <li><strong>Tugas 2: Tambah Data</strong> — Tambahkan 2 transaksi fiktif baru ke dalam daftar "Transaksi Terakhir" di bawah kode yang sudah ada.</li>
+                </ul>
+
+                <div class="step-box">
+                    <h3>A. Styling</h3>
+                    <p>Pada class <code>RecentTransactionsWidget</code>, properti <code>trailing</code> pada setiap <code>ListTile</code> berisi widget <code>Text</code> yang menampilkan nominal transaksi. Warna teks diatur melalui <code>style: TextStyle(color: ...)</code>. Untuk transaksi pengeluaran (<em>"- Rp 50.000"</em> pada Makan Siang dan <em>"- Rp 150.000"</em> pada Isi Bensin) digunakan <code>color: Colors.red</code>, sedangkan untuk transaksi pemasukan (<em>"+ Rp 5.000.000"</em> pada Gaji Bulanan) digunakan <code>color: Colors.green</code>. Properti <code>fontWeight: FontWeight.bold</code> ditambahkan agar nominal tampil tebal dan mudah dibedakan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/tugas-2-1.png" alt="Screenshot Tugas Styling">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Tambah Data</h3>
+                    <p>Dua transaksi fiktif baru ditambahkan di bawah item <em>"Isi Bensin"</em>, di dalam <code>Column</code> yang berada pada <code>Card</code>. Sebelum setiap item baru disisipkan <code>const Divider(height: 1)</code> sebagai garis pemisah agar tampilan tetap konsisten dengan item sebelumnya. Transaksi pertama adalah <em>"Belanja Bulanan"</em> (pengeluaran) dengan <code>Icons.shopping_cart</code> pada <code>CircleAvatar</code> berlatar <code>Colors.orange</code>, <code>subtitle</code> <em>"15 Sep 2026"</em>, dan <code>trailing</code> <em>"- Rp 300.000"</em> berwarna merah. Transaksi kedua adalah <em>"Bonus Proyek"</em> (pemasukan) dengan <code>Icons.card_giftcard</code> pada <code>CircleAvatar</code> berlatar <code>Colors.green</code>, <code>subtitle</code> <em>"17 Sep 2026"</em>, dan <code>trailing</code> <em>"+ Rp 750.000"</em> berwarna hijau. Kedua item mengikuti aturan warna pada Tugas 1, yaitu merah untuk pengeluaran dan hijau untuk pemasukan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/tugas-2-2.png" alt="Screenshot Tugas Tambah Data">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>Sebelum vs Sesudah</h3>
+                    <p>Sebelum dimodifikasi, daftar "Transaksi Terakhir" hanya berisi 3 transaksi. Setelah dimodifikasi, daftar berisi 5 transaksi dengan 2 transaksi baru pada bagian bawah, dan warna nominal pada seluruh transaksi sudah sesuai jenisnya, yaitu merah untuk pengeluaran dan hijau untuk pemasukan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/2/sebelum-1.png" alt="Screenshot Sebelum">
+                        <img src="./ss/2/sesudah-2.png" alt="Screenshot Sesudah">
+                    </div>
+                    
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa <code>Row</code> digunakan untuk menyusun widget secara horizontal, seperti deretan tombol aksi, sedangkan <code>Column</code> digunakan untuk menyusun widget secara vertikal, seperti daftar transaksi. 
+                        Properti <code>mainAxisAlignment</code> dan <code>crossAxisAlignment</code> memudahkan pengaturan jarak dan perataan elemen, sementara <code>Container</code> dengan <code>padding</code> dan <code>BoxDecoration</code> memungkinkan pengaturan ruang, warna, dan bentuk latar. 
+                        Widget <code>ListTile</code> mempermudah pembuatan baris daftar yang rapi melalui <code>leading</code>, <code>title</code>, <code>subtitle</code>, dan <code>trailing</code>, dan <code>SingleChildScrollView</code> memastikan halaman tetap dapat diakses ketika isinya melebihi layar. 
+                        Dengan memahami konsep layouting dan styling ini, mahasiswa dapat menyusun antarmuka Flutter yang lebih rapi, informatif, dan mudah dibaca.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
 </div>
 <footer class="footer-section text-light mt-5 pt-5 pb-4">
     <div class="container">
