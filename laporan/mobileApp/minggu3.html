@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Aplikasi Mobile - Input Widgets &amp; Forms</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5 mt-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 3: Input Widgets &amp; Forms - Menangkap Data, Dropdown, dan Validasi (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Salah satu bagian penting dalam aplikasi mobile adalah kemampuan menangkap masukan (input) dari pengguna, misalnya melalui formulir (form). Di Flutter, form dibangun dari beberapa pilar utama: widget <code>Form</code> yang dipasangkan dengan <code>GlobalKey</code> sebagai wadah untuk memvalidasi banyak input sekaligus, <code>TextFormField</code> sebagai kolom teks yang mendukung validasi terintegrasi, dan <code>TextEditingController</code> sebagai pengendali untuk membaca teks yang diketik pengguna.
+                    <br><br>
+                    Agar data yang masuk sesuai format yang diharapkan, setiap kolom input dapat diberi fungsi <code>validator</code>. Fungsi ini akan mengembalikan <code>null</code> apabila data valid (tidak ada error), atau mengembalikan sebuah <code>String</code> berisi pesan error apabila data tidak valid, yang kemudian ditampilkan berwarna merah di bawah kolom. Pada praktikum ini, mahasiswa membuat halaman baru <code>add_transaction_screen.dart</code> untuk mencatat transaksi baru pada aplikasi <em>Expense Tracker</em>, lengkap dengan kolom judul transaksi, nominal, dropdown kategori, serta tombol simpan yang memicu validasi menggunakan <code>_formKey.currentState!.validate()</code>.
+                </p>
+                <a href="https://github.com/PAJILAPIP/PrakAppMob_B_2411531008" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu menangkap teks dari pengguna melalui <code>TextEditingController</code>.</li>
+                    <li>Mahasiswa mampu menerapkan widget dropdown statis (<code>DropdownButtonFormField</code>).</li>
+                    <li>Mahasiswa mampu melakukan validasi input untuk mencegah data kosong atau format yang salah.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK</li>
+                            <li>Code Editor: Visual Studio Code atau Android Studio</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Emulator / Device untuk menjalankan aplikasi</li>
+                            <li>Project Flutter</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Persiapan State &amp; Controller</h3>
+                    <p>Buat file baru <code>add_transaction_screen.dart</code> berisi class <code>AddTransactionScreen</code> yang <em>extends</em> <code>StatefulWidget</code>. Digunakan <code>StatefulWidget</code> karena isi formulir, baik teks maupun pilihan dropdown, akan terus berubah selama pengguna mengetik atau memilih opsi. Di dalam class state-nya, yaitu <code>_AddTransactionScreenState</code>, disiapkan <code>final _formKey = GlobalKey&lt;FormState&gt;()</code> yang berfungsi sebagai kunci untuk mengontrol widget <code>Form</code> sekaligus memicu seluruh validator di dalamnya secara bersamaan.</p>
+                    <p>Selanjutnya disiapkan dua <code>TextEditingController</code>, yaitu <code>_titleController</code> untuk membaca judul transaksi dan <code>_amountController</code> untuk membaca nominal. Ditambahkan pula variabel <code>String selectedCategory = 'Makanan'</code> sebagai nilai awal dropdown dan <code>List&lt;String&gt; categories</code> berisi daftar pilihan kategori. Method <code>dispose()</code> di-<em>override</em> untuk memanggil <code>.dispose()</code> pada setiap controller ketika halaman ditutup, agar tidak terjadi <em>memory leak</em>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/1.png" alt="Screenshot 1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Membuat Kolom Input (TextFormField)</h3>
+                    <p>Seluruh kolom input dibungkus dengan widget <code>Form</code> yang propertinya <code>key</code> dihubungkan ke <code>_formKey</code>, lalu di dalamnya digunakan <code>Column</code> untuk menyusun kolom-kolom secara vertikal. Kolom pertama adalah <code>TextFormField</code> untuk judul transaksi dengan <code>controller: _titleController</code>, dekorasi <code>InputDecoration</code> berisi <code>labelText</code> dan <code>prefixIcon</code>, serta <code>validator</code> yang mengembalikan pesan error jika nilainya kosong.</p>
+                    <p>Kolom kedua adalah <code>TextFormField</code> untuk nominal dengan <code>controller: _amountController</code> dan <code>keyboardType: TextInputType.number</code> agar keyboard yang muncul berupa keyboard angka. Pada <code>validator</code>-nya, selain memeriksa apakah kolom kosong, juga digunakan <code>double.tryParse(value)</code> untuk memastikan nilai yang diketik benar-benar berupa angka; jika hasilnya <code>null</code>, berarti data bukan angka yang valid dan pesan error ditampilkan. Widget <code>SizedBox(height: 16.0)</code> disisipkan di antara kolom sebagai jarak vertikal.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/2.png" alt="Screenshot 2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Dropdown &amp; Tombol Simpan</h3>
+                    <p>Kolom kategori dibuat menggunakan <code>DropdownButtonFormField&lt;String&gt;</code> dengan <code>value: selectedCategory</code> sebagai nilai yang sedang dipilih. Daftar opsinya dibuat dari <code>categories.map(...)</code> yang mengubah setiap kategori menjadi <code>DropdownMenuItem</code>. Pada <code>onChanged</code>, nilai baru yang dipilih pengguna disimpan kembali ke <code>selectedCategory</code> di dalam <code>setState()</code> agar tampilan dropdown diperbarui sesuai pilihan.</p>
+                    <p>Tombol simpan dibuat dengan <code>ElevatedButton</code> yang diberi gaya melalui <code>ElevatedButton.styleFrom</code> (warna latar <code>Colors.deepPurple</code> dan warna teks putih). Pada <code>onPressed</code>, dipanggil <code>_formKey.currentState!.validate()</code> yang akan menjalankan seluruh fungsi <code>validator</code> pada setiap <code>TextFormField</code> secara bersamaan. Apabila seluruh input valid (mengembalikan <code>true</code>), maka <code>ScaffoldMessenger.of(context).showSnackBar(...)</code> dipanggil untuk menampilkan notifikasi berwarna hijau berisi ringkasan data yang tersimpan; apabila ada input yang tidak valid, pesan error otomatis muncul di bawah kolom terkait dan data tidak disimpan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/3.png" alt="Screenshot 3">
+                        <img src="./ss/3/3-1.png" alt="Screenshot 3-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Penjelasan main.dart</h3>
+                    <p>Pada praktikum ini, file <code>main.dart</code> disederhanakan agar aplikasi langsung membuka halaman form saat dijalankan. Baris <code>import 'add_transaction_screen.dart';</code> digunakan untuk memanggil file yang telah dibuat sebelumnya sehingga class <code>AddTransactionScreen</code> dapat digunakan di dalam <code>main.dart</code>.</p>
+                    <p>Fungsi <code>void main()</code> tetap memanggil <code>runApp(const MyApp())</code> sebagai titik awal aplikasi. Class <code>MyApp</code> yang merupakan <code>StatelessWidget</code> mengembalikan <code>MaterialApp</code> dengan <code>debugShowCheckedModeBanner: false</code>, <code>title: 'Expense Tracker Modul 3'</code>, dan <code>theme: ThemeData(primarySwatch: Colors.deepPurple)</code> sebagai warna tema baru pada modul ini. Yang membedakan dari modul sebelumnya adalah properti <code>home</code> yang kini langsung diarahkan ke <code>const AddTransactionScreen()</code>, sehingga halaman form transaksi menjadi halaman pertama yang tampil ketika aplikasi dibuka, bukan halaman dashboard.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/4.png" alt="Screenshot 4">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>5. Hasil Akhir</h3>
+                    <p>Setelah seluruh langkah selesai, simpan kedua file kemudian jalankan aplikasi dengan perintah <code>flutter run</code>. Aplikasi akan langsung menampilkan halaman "Catat Transaksi Baru" berisi kolom Judul Transaksi, Nominal, dropdown Kategori, dan tombol Simpan Transaksi. Apabila tombol ditekan tanpa mengisi salah satu kolom, atau nominal diisi dengan huruf, maka pesan error berwarna merah akan muncul di bawah kolom yang bersangkutan. Apabila seluruh kolom terisi dengan benar, notifikasi hijau berisi ringkasan data yang tersimpan akan muncul di bagian bawah layar.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/5.png" alt="Screenshot 5">
+                        <img src="./ss/3/5-1.png" alt="Screenshot 5-1">
+                    </div>
+                </div>
+            </section>
+
+            <section id="tugas">
+                <h2 class="section-title text-light">Tugas: Input Tanggal</h2>
+                <p class="text-laprak">
+                    Tugas pada praktikum ini adalah menambahkan satu input baru sebelum tombol Simpan untuk mengisi Tanggal Transaksi, menggunakan <code>TextFormField</code> biasa dengan format teks <code>DD/MM/YYYY</code>, memanfaatkan fungsi <code>showDatePicker</code> sebagai nilai tambah, dan diberikan validasi wajib diisi.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Menambahkan Controller Tanggal</h3>
+                    <p>Ditambahkan satu controller baru, yaitu <code>final _dateController = TextEditingController();</code>, yang berfungsi menyimpan dan menampilkan teks tanggal yang telah dipilih pengguna. Controller ini juga ditambahkan ke dalam method <code>dispose()</code> agar ikut dibersihkan ketika halaman ditutup, sama seperti dua controller sebelumnya.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/tugas-1.png" alt="Screenshot Tugas controller tanggal">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Membuat Fungsi _selectDate dengan showDatePicker</h3>
+                    <p>Dibuat sebuah fungsi <code>Future&lt;void&gt; _selectDate(BuildContext context) async</code> yang memanggil <code>showDatePicker</code> bawaan Flutter untuk menampilkan kalender pemilihan tanggal. Parameter <code>initialDate: DateTime.now()</code> menjadikan tanggal hari ini sebagai tampilan awal kalender, sedangkan <code>firstDate</code> dan <code>lastDate</code> membatasi rentang tanggal yang dapat dipilih, yaitu dari tahun 2000 hingga 2100.</p>
+                    <p>Nilai yang dipilih pengguna ditampung dalam variabel <code>final DateTime? pickedDate</code>. Apabila pengguna benar-benar memilih tanggal (<code>pickedDate != null</code>), maka di dalam <code>setState()</code> nilai tersebut diformat ulang menjadi teks <code>DD/MM/YYYY</code> menggunakan <code>pickedDate.day</code>, <code>pickedDate.month</code>, dan <code>pickedDate.year</code>. Method <code>.padLeft(2, '0')</code> digunakan pada tanggal dan bulan agar angka satu digit tetap ditampilkan dengan dua digit (misalnya "05" bukan "5"), lalu hasilnya dimasukkan ke <code>_dateController.text</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/tugas-2.png" alt="Screenshot Tugas fungsi selectDate">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>C. Menambahkan TextFormField Tanggal Transaksi</h3>
+                    <p>Sebelum tombol Simpan, ditambahkan kolom <code>TextFormField</code> baru dengan <code>controller: _dateController</code> dan <code>readOnly: true</code>, sehingga pengguna tidak bisa mengetik langsung pada kolom ini dan hanya dapat mengisi tanggal melalui kalender. Pada <code>InputDecoration</code>, diberikan <code>labelText: 'Tanggal Transaksi'</code>, <code>hintText: 'DD/MM/YYYY'</code> sebagai contoh format, dan <code>prefixIcon: Icon(Icons.calendar_today)</code> sebagai penanda visual kolom tanggal.</p>
+                    <p>Di sisi kanan kolom ditambahkan <code>suffixIcon</code> berupa <code>IconButton</code> dengan ikon <code>Icons.add</code> (tombol plus). Pada properti <code>onPressed</code> tombol ini, dipanggil fungsi <code>_selectDate(context)</code> sehingga saat tombol plus ditekan, kalender <code>showDatePicker</code> akan terbuka dan tanggal yang dipilih otomatis mengisi kolom. Terakhir, ditambahkan <code>validator</code> yang mengembalikan pesan <em>"Tanggal wajib diisi"</em> apabila nilai <code>_dateController</code> masih kosong, sehingga kolom ini ikut divalidasi bersama kolom lain saat tombol Simpan ditekan melalui <code>_formKey.currentState!.validate()</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/tugas-3.png" alt="Screenshot Tugas TextFormField tanggal">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>D. Menyesuaikan Tombol Simpan</h3>
+                    <p>Isi <code>SnackBar</code> pada tombol Simpan disesuaikan agar turut menampilkan tanggal yang telah dipilih, dengan menambahkan <code>'- Tanggal: ${_dateController.text}'</code> pada teks ringkasan yang muncul setelah <code>_formKey.currentState!.validate()</code> bernilai <code>true</code>. Dengan demikian, notifikasi sukses menampilkan judul, nominal, dan tanggal transaksi sekaligus.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/3/tugas-4.png" alt="Screenshot Tugas SnackBar menampilkan tanggal">
+                        <img src="./ss/3/tugas-5.png" alt="Screenshot Tugas hasil akhir">
+                        <img src="./ss/3/tugas-6.png" alt="Screenshot Tugas validasi tanggal kosong">
+                    </div>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa formulir input pada Flutter dibangun dari kombinasi <code>Form</code>, <code>GlobalKey</code>, <code>TextFormField</code>, dan <code>TextEditingController</code> yang bekerja sama untuk menangkap dan memvalidasi data dari pengguna. 
+                        Fungsi <code>validator</code> memastikan data yang dimasukkan sesuai format yang diharapkan sebelum diproses lebih lanjut, sedangkan <code>DropdownButtonFormField</code> memudahkan pengguna memilih salah satu opsi dari daftar yang telah ditentukan. 
+                        Penambahan fitur pemilihan tanggal melalui <code>showDatePicker</code> menunjukkan bagaimana Flutter menyediakan komponen bawaan yang dapat dikombinasikan dengan <code>TextFormField</code> untuk menghasilkan input yang lebih aman dan konsisten formatnya. 
+                        Dengan memahami konsep ini, mahasiswa dapat merancang formulir input yang informatif, tervalidasi, dan nyaman digunakan.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
