@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Aplikasi Mobile - Navigasi &amp; Passing Data</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5 mt-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 4: Navigasi &amp; Passing Data - Navigator, Konsep Stack, dan Constructor (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Sebuah aplikasi mobile umumnya tidak hanya terdiri dari satu halaman, melainkan beberapa halaman yang saling terhubung. Di Flutter, perpindahan antar halaman dikelola oleh <code>Navigator</code>, yaitu widget yang bekerja seperti tumpukan kartu (<em>stack</em>). Ketika berpindah ke halaman baru digunakan <code>Navigator.push</code> yang akan meletakkan halaman baru di tumpukan paling atas, sedangkan untuk menutup halaman dan kembali ke halaman sebelumnya digunakan <code>Navigator.pop</code> yang menghapus halaman teratas dari tumpukan.
+                    <br><br>
+                    Selain berpindah halaman, seringkali dibutuhkan pengiriman data dari satu halaman ke halaman lain, misalnya mengirim judul dan nominal transaksi ke halaman detail. Hal ini dilakukan melalui <em>Constructor</em>, di mana halaman tujuan menyiapkan variabel bertipe <code>final</code> sebagai penampung data, lalu mewajibkan pengisiannya menggunakan kata kunci <code>required</code>. Pada praktikum ini, mahasiswa membuat halaman <code>transaction_detail_screen.dart</code> yang menerima data dari <code>dashboard_screen.dart</code> saat salah satu baris transaksi ditekan, serta menerapkan <code>Navigator.pop</code> agar formulir pada <code>add_transaction_screen.dart</code> otomatis tertutup dan kembali ke Dashboard setelah data berhasil disimpan.
+                </p>
+                <a href="https://github.com/PAJILAPIP/PrakAppMob_B_2411531008" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu menerapkan <code>Navigator.push</code> untuk berpindah ke layar baru.</li>
+                    <li>Mahasiswa mampu menggunakan <code>Navigator.pop</code> untuk menutup layar setelah aksi selesai.</li>
+                    <li>Mahasiswa mampu mengirim data (String, int) antar layar melalui Constructor.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK</li>
+                            <li>Code Editor: Visual Studio Code atau Android Studio</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Emulator / Device untuk menjalankan aplikasi</li>
+                            <li>Project Flutter</li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Membuat Halaman Detail Transaksi</h3>
+                    <p>Dibuat file baru <code>transaction_detail_screen.dart</code> berisi class <code>TransactionDetailScreen</code> yang <em>extends</em> <code>StatelessWidget</code>, karena data yang ditampilkan hanya dikirim sekali dari halaman sebelumnya dan tidak berubah di halaman ini. Empat variabel bertipe <code>final</code> dideklarasikan sebagai penampung data, yaitu <code>title</code>, <code>amount</code>, <code>category</code>, dan <code>date</code>. Variabel wajib bertipe <code>final</code> karena <code>StatelessWidget</code> bersifat tidak dapat diubah (<em>immutable</em>) setelah dibuat.</p>
+                    <p>Keempat variabel tersebut diwajibkan pengisiannya melalui constructor <code>const TransactionDetailScreen({super.key, required this.title, required this.amount, required this.category, required this.date})</code>. Kata kunci <code>required</code> memastikan halaman ini tidak dapat dibuka tanpa mengirimkan keempat data tersebut. Pada method <code>build</code>, data ditampilkan menggunakan <code>Icon(Icons.receipt_long)</code> sebagai ikon struk, <code>Text(title)</code> dan <code>Text(amount)</code> sebagai judul dan nominal utama, <code>Divider</code> sebagai garis pemisah, serta method pembantu <code>_buildDetailRow(label, value)</code> yang menyusun <code>Row</code> berisi label dan nilai (Kategori, Tanggal, dan Status) secara rapi menggunakan <code>mainAxisAlignment: MainAxisAlignment.spaceBetween</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/1.png" alt="Screenshot 1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Pindah ke Detail &amp; Mengirim Data (Push)</h3>
+                    <p>Pada file <code>dashboard_screen.dart</code>, setiap <code>ListTile</code> dalam daftar transaksi diberi properti <code>onTap</code> yang berisi fungsi navigasi. Di dalamnya dipanggil <code>Navigator.push(context, MaterialPageRoute(builder: (context) => ...))</code>, di mana <code>MaterialPageRoute</code> berfungsi membuat rute transisi standar Material Design menuju halaman baru, dan <code>context</code> digunakan agar Flutter mengetahui posisi halaman saat ini di dalam tumpukan navigasi.</p>
+                    <p>Pada parameter <code>builder</code>, dibuat objek <code>TransactionDetailScreen</code> dengan mengisi keempat parameter constructor-nya sesuai data baris yang ditekan. Misalnya pada baris "Makan Siang", dikirim <code>title: 'Makan Siang'</code>, <code>amount: '- Rp 50.000'</code>, <code>category: 'Makanan'</code>, dan <code>date: '13 September 2026'</code>; sedangkan pada baris "Gaji Bulanan" dikirim data yang berbeda sesuai transaksinya. Dengan cara ini, satu halaman detail yang sama dapat menampilkan data yang berbeda-beda tergantung baris mana yang ditekan oleh pengguna.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/2.png" alt="Screenshot 2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Menutup Layar / Kembali Otomatis (Pop)</h3>
+                    <p>Pada file <code>add_transaction_screen.dart</code>, tombol Simpan tetap menjalankan <code>_formKey.currentState!.validate()</code> untuk memvalidasi seluruh kolom input. Apabila validasi berhasil, <code>ScaffoldMessenger.of(context).showSnackBar(...)</code> dipanggil untuk menampilkan notifikasi hijau bertuliskan <em>"Transaksi Berhasil Disimpan!"</em>. Setelah notifikasi muncul, baris berikutnya memanggil <code>Navigator.pop(context)</code>.</p>
+                    <p>Fungsi <code>Navigator.pop(context)</code> berperan menghapus halaman <code>AddTransactionScreen</code> yang sedang aktif dari tumpukan navigasi, sehingga aplikasi otomatis kembali menampilkan halaman sebelumnya, yaitu <code>DashboardScreen</code>, tanpa perlu pengguna menekan tombol kembali secara manual. Dengan demikian, alur kerja formulir menjadi lebih alami: pengguna mengisi data, menekan Simpan, melihat notifikasi sukses, lalu langsung diarahkan kembali ke Dashboard.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/3.png" alt="Screenshot 3">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Penjelasan main.dart</h3>
+                    <p>File <code>main.dart</code> pada modul ini menjadi lebih ringkas karena struktur UI dashboard telah dipindahkan ke file terpisah <code>dashboard_screen.dart</code>. Baris <code>import 'dashboard_screen.dart';</code> digunakan untuk memanggil file tersebut agar class <code>DashboardScreen</code> dapat digunakan.</p>
+                    <p>Fungsi <code>void main()</code> tetap memanggil <code>runApp(const MyApp())</code> sebagai titik awal aplikasi. Class <code>MyApp</code> yang merupakan <code>StatelessWidget</code> mengembalikan <code>MaterialApp</code> dengan <code>debugShowCheckedModeBanner: false</code>, <code>title: 'Expense Tracker - Modul 4'</code>, dan <code>theme: ThemeData(primarySwatch: Colors.red)</code>. Warna tema aplikasi diubah menjadi merah pada modul ini, berbeda dari modul sebelumnya yang berwarna ungu (<code>deepPurple</code>), sebagai pembeda visual antar modul. Properti <code>home: const DashboardScreen()</code> menjadikan <code>DashboardScreen</code> sebagai halaman pertama yang dimuat saat aplikasi dibuka, dari mana pengguna dapat bernavigasi ke halaman form maupun halaman detail.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/4.png" alt="Screenshot 4">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>5. Hasil Akhir</h3>
+                    <p>Setelah seluruh file disimpan, jalankan aplikasi dengan perintah <code>flutter run</code>. Halaman Dashboard menampilkan sapaan, kartu saldo, daftar "Transaksi Terakhir", dan sebuah tombol mengambang (<code>FloatingActionButton</code>) berikon tambah di pojok kanan bawah. Saat salah satu baris transaksi ditekan, aplikasi berpindah ke halaman Detail Transaksi dengan tombol "Panah Kiri" yang otomatis muncul di <code>AppBar</code> berkat <code>Navigator.push</code>, serta judul, nominal, kategori, dan tanggal yang menyesuaikan dengan baris yang diklik.</p>
+                    <p>Saat tombol tambah pada Dashboard ditekan, aplikasi berpindah ke halaman Catat Transaksi. Setelah formulir diisi dengan benar dan tombol Simpan ditekan, notifikasi sukses berwarna hijau muncul sesaat sebelum aplikasi otomatis kembali ke halaman Dashboard berkat <code>Navigator.pop</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/5.png" alt="Screenshot 5">
+                        <img src="./ss/4/5-1.png" alt="Screenshot 5-1">
+                        <img src="./ss/4/5-2.png" alt="Screenshot 5-2">
+                    </div>
+                </div>
+            </section>
+
+            <section id="tugas">
+                <h2 class="section-title text-light">Tugas: Input Tanggal</h2>
+                <p class="text-laprak">
+                    Tugas pada praktikum ini adalah menambahkan satu input baru sebelum tombol Simpan pada <code>add_transaction_screen.dart</code> untuk mengisi Tanggal Transaksi, menggunakan <code>TextFormField</code> biasa dengan format teks <code>DD/MM/YYYY</code>, memanfaatkan fungsi <code>showDatePicker</code> pada tombol plus, dan diberikan validasi wajib diisi.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Menambahkan Controller Tanggal</h3>
+                    <p>Ditambahkan satu controller baru di dalam class <code>_AddTransactionScreenState</code>, yaitu <code>final _dateController = TextEditingController();</code>, sejajar dengan <code>_titleController</code> dan <code>_amountController</code> yang sudah ada sebelumnya. Controller ini berfungsi menampung dan menampilkan teks tanggal yang dipilih pengguna melalui kalender.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/tugas-1.png" alt="Screenshot Tugas controller tanggal">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Menambahkan TextFormField Tanggal dengan Tombol Plus</h3>
+                    <p>Setelah kolom Nominal dan sebelum tombol Simpan, ditambahkan <code>TextFormField</code> baru dengan <code>controller: _dateController</code> dan <code>readOnly: true</code>, sehingga pengguna tidak dapat mengetik langsung pada kolom ini dan hanya dapat mengisinya melalui kalender. Pada <code>InputDecoration</code> diberikan <code>labelText: "Tanggal Transaksi"</code> dan <code>hintText: "DD/MM/YYYY"</code> sebagai contoh format penulisan tanggal, serta <code>border: const OutlineInputBorder()</code> agar tampilannya konsisten dengan kolom lain.</p>
+                    <p>Di sisi kanan kolom ditambahkan <code>suffixIcon</code> berupa <code>IconButton</code> dengan <code>icon: const Icon(Icons.add)</code> (tombol plus). Pada <code>onPressed</code> tombol ini ditulis fungsi <code>async</code> yang langsung memanggil <code>showDatePicker</code>, tanpa perlu dipisah menjadi method tersendiri. Parameter <code>context</code> diisi dengan context halaman saat ini, <code>initialDate: DateTime.now()</code> menjadikan tanggal hari ini sebagai tampilan awal kalender, sedangkan <code>firstDate: DateTime(1)</code> dan <code>lastDate: DateTime(2100)</code> menentukan rentang tanggal yang dapat dipilih.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/tugas-2.png" alt="Screenshot Tugas TextFormField tanggal">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>C. Memproses Tanggal Terpilih dan Validasi</h3>
+                    <p>Tanggal yang dipilih pengguna ditampung dalam variabel <code>final DateTime? pickedDate</code>. Apabila pengguna benar-benar memilih tanggal (<code>pickedDate != null</code>), maka di dalam <code>setState()</code> nilai tersebut diformat ulang menjadi teks <code>DD/MM/YYYY</code> menggunakan <code>pickedDate.day</code>, <code>pickedDate.month</code>, dan <code>pickedDate.year</code>. Method <code>.toString().padLeft(2, '0')</code> digunakan pada tanggal dan bulan agar angka satu digit tetap ditampilkan dengan dua digit (misalnya "05", bukan "5"), lalu hasilnya ditempatkan ke dalam <code>_dateController.text</code> sehingga langsung tampil pada kolom.</p>
+                    <p>Pada kolom <code>TextFormField</code> tanggal juga ditambahkan <code>validator: (value) =&gt; value!.isEmpty ? "Tanggal wajib diisi" : null</code>, sehingga kolom ini ikut diperiksa bersama kolom Judul dan Nominal saat tombol Simpan ditekan melalui <code>_formKey.currentState!.validate()</code>. Apabila tanggal belum dipilih, pesan error <em>"Tanggal wajib diisi"</em> akan muncul berwarna merah di bawah kolom dan proses penyimpanan beserta <code>Navigator.pop(context)</code> tidak akan dijalankan sampai tanggal diisi.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/4/tugas-3.png" alt="Screenshot Tugas validasi tanggal">
+                        <img src="./ss/4/tugas-4.png" alt="Screenshot Tugas hasil akhir input tanggal">
+                    </div>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa <code>Navigator</code> pada Flutter bekerja seperti tumpukan halaman, di mana <code>Navigator.push</code> digunakan untuk menambahkan halaman baru ke tumpukan dan <code>Navigator.pop</code> digunakan untuk menutup halaman teratas dan kembali ke halaman sebelumnya. 
+                        Pengiriman data antar halaman dilakukan melalui constructor dengan variabel bertipe <code>final</code> dan kata kunci <code>required</code>, sehingga halaman tujuan dapat menampilkan data yang berbeda-beda sesuai data yang dikirim oleh halaman sebelumnya. 
+                        Penerapan <code>Navigator.pop</code> setelah proses simpan juga membuat alur formulir menjadi lebih natural, karena pengguna otomatis diarahkan kembali ke Dashboard setelah transaksi berhasil disimpan. 
+                        Dengan memahami konsep navigasi dan passing data ini, mahasiswa dapat membangun aplikasi Flutter dengan banyak halaman yang saling terhubung dan bertukar data secara terstruktur.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
