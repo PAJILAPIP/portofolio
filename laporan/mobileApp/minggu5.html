@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Aplikasi Mobile - Arsitektur Navigasi: Named Routes dan Bottom Navigation Bar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5">
+
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 5: Arsitektur Navigasi, Named Routes dan Bottom Navigation Bar (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Pada aplikasi yang memiliki banyak layar, pengelolaan perpindahan halaman perlu dirancang dengan baik agar kode tetap rapi dan mudah dirawat. Flutter menyediakan <strong>Named Routes</strong>, yaitu cara mendefinisikan nama berupa <em>string</em> untuk setiap halaman di dalam <code>MaterialApp</code>, sehingga seluruh rute aplikasi terkumpul di satu tempat dan dapat dipanggil hanya dengan menyebut namanya melalui <code>Navigator.pushNamed()</code>. Cara ini mencegah munculnya <em>spaghetti code</em> ketika jumlah layar semakin banyak.
+                    <br><br>
+                    Selain itu, aplikasi modern umumnya memiliki menu di bagian bawah layar untuk berpindah antar halaman utama. Flutter menyediakan widget <strong>BottomNavigationBar</strong> untuk kebutuhan ini. Widget tersebut mengontrol tampilan utama (<code>body</code>) berdasarkan tab yang aktif, <strong>tanpa</strong> berpindah <code>Scaffold</code>. Tab yang aktif disimpan dalam sebuah state (<code>_selectedIndex</code>), sehingga widget penampungnya harus berupa <code>StatefulWidget</code>.
+                    <br><br>
+                    Pada praktikum ini, hasil Praktikum 1 sampai 4 (widget, layouting, form input, dan navigasi) diintegrasikan ke dalam satu aplikasi keuangan (<em>Expense Tracker</em>) yang memiliki tiga tab, yaitu Beranda (Dashboard), Riwayat, dan Profil. Sebagai tugas, dibuat halaman riwayat transaksi, halaman profil, dan halaman login. Sebagai tugas tambahan, seluruh hasil Praktikum 1 sampai 5 digabung menjadi satu project yang menyimpan data pada <em>local storage</em> (SQLite), memiliki fitur register dan login, serta dibuat menjadi file APK.
+                </p>
+                <a href="https://github.com/PAJILAPIP/PrakAppMob_B_2411531008" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+                <a href="https://youtu.be/4VpbWzxQjbE" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-youtube"></i> Lihat di YouTube
+                </a>
+                <a href="https://drive.google.com/file/d/1Et9etKbMhnrs50F0nd8qwOaMyIgj-sHC/view?usp=sharing" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-download"></i> APK (Google Drive)
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu menerapkan <code>Named Routes</code> untuk navigasi yang terpusat dan rapi.</li>
+                    <li>Mahasiswa mampu membangun menu bawah (<code>BottomNavigationBar</code>) seperti pada aplikasi modern.</li>
+                    <li>Mahasiswa mampu mengintegrasikan halaman Dashboard, Riwayat, dan Profil dalam satu wadah (<code>MainScreen</code>).</li>
+                    <li>Mahasiswa mampu membuat halaman riwayat transaksi, halaman profil, dan halaman login.</li>
+                    <li>Mahasiswa mampu menyimpan data secara permanen menggunakan <em>local storage</em> (SQLite dan <code>shared_preferences</code>) sehingga data tidak hilang saat aplikasi ditutup.</li>
+                    <li>Mahasiswa mampu menggabungkan hasil Praktikum 1 sampai 5 menjadi satu project dan menghasilkan file APK.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK</li>
+                            <li>Visual Studio Code</li>
+                            <li>Android SDK (dipasang melalui Android Studio)</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Browser (Chrome) untuk <em>debugging</em></li>
+                            <li>Smartphone Android (Samsung Galaxy A12) dengan USB Debugging</li>
+                            <li>Package <code>sqflite</code>, <code>path</code>, <code>shared_preferences</code>, <code>crypto</code>, dan <code>sqflite_common_ffi_web</code></li>
+                            <li>Koneksi Internet</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Mendaftarkan Named Routes</h3>
+                    <p>Pada langkah ini seluruh rute aplikasi didaftarkan di dalam <code>MaterialApp</code> pada file <code>main.dart</code>. Parameter <code>home</code> dihapus, kemudian diganti dengan <code>initialRoute</code> dan <code>routes</code>.</p>
+
+                    <p><strong>A. Mengubah MaterialApp pada main.dart</strong></p>
+                    <p>Parameter <code>home: DashboardScreen()</code> dihapus, lalu ditambahkan dua parameter berikut.</p>
+                    <ul>
+                        <li><strong><code>initialRoute: '/'</code></strong> — Menentukan rute pertama yang dimuat ketika aplikasi dijalankan, yaitu rute <code>'/'</code>.</li>
+                        <li><strong><code>routes</code></strong> — Berupa <code>Map</code> yang berfungsi sebagai tabel peta rute aplikasi. Setiap isinya memasangkan nama rute (<em>string</em>) dengan fungsi yang mengembalikan widget halaman tujuan.</li>
+                        <li><strong><code>'/': (context) =&gt; const MainScreen()</code></strong> — Rute <code>'/'</code> menunjuk ke <code>MainScreen</code>, yaitu layar yang memiliki tab.</li>
+                        <li><strong><code>'/add': (context) =&gt; const AddTransactionScreen()</code></strong> — Rute <code>'/add'</code> menunjuk ke halaman form tambah transaksi.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/1-1.png" alt="Screenshot 1-1">
+                    </div>
+
+                    <p><strong>B. Memanggil Rute dari Dashboard</strong></p>
+                    <p>Pada file <code>dashboard_screen.dart</code> (hasil Praktikum 4), logika <code>Navigator.push(context, MaterialPageRoute(...))</code> pada <code>FloatingActionButton</code> diganti dengan <code>Navigator.pushNamed(context, '/add')</code>. Perintah ini memanggil rute yang sudah didaftarkan di <code>main.dart</code>, sehingga tidak perlu lagi membuat <code>MaterialPageRoute</code> secara manual dan tidak perlu meng-<em>import</em> file halaman tujuan di setiap tempat pemanggilan.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/1-2.png" alt="Screenshot 1-2">
+                        <img src="./ss/5/1-3.png" alt="Screenshot 1-3">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Membuat Penampung Tab (MainScreen)</h3>
+                    <p>Pada langkah ini dibuat file baru <code>main_screen.dart</code> yang berfungsi sebagai wadah untuk ketiga tab. Class ini dibuat sebagai <code>StatefulWidget</code> karena tab yang aktif akan selalu berubah nilainya.</p>
+
+                    <p><strong>A. Variabel _selectedIndex</strong></p>
+                    <p>Variabel <code>int _selectedIndex = 0</code> menyimpan indeks tab yang sedang aktif. Nilai awal <code>0</code> berarti tab pertama (Beranda) aktif secara default.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/2-1.png" alt="Screenshot 2-1">
+                    </div>
+
+                    <p><strong>B. List Halaman (_pages)</strong></p>
+                    <p>Variabel <code>final List&lt;Widget&gt; _pages</code> berisi daftar halaman yang akan ditukar sesuai tab. Isinya adalah <code>DashboardScreen()</code> untuk Beranda, widget <code>Center</code> berisi teks sementara untuk Riwayat, dan <code>ProfileScreen()</code> untuk Profil. Urutan isi list harus sama dengan urutan tab pada <code>BottomNavigationBar</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/2-2.png" alt="Screenshot 2-2">
+                    </div>
+
+                    <p><strong>C. Method _onItemTapped</strong></p>
+                    <p>Method ini menerima parameter <code>index</code> dari tab yang diketuk. Di dalamnya, <code>setState()</code> dipanggil untuk mengubah nilai <code>_selectedIndex</code> menjadi <code>index</code> tersebut. Pemanggilan <code>setState()</code> memberi tahu Flutter bahwa ada perubahan data, sehingga tampilan dirender ulang dan halaman yang ditampilkan ikut berganti.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/2-3.png" alt="Screenshot 2-3">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Merangkai BottomNavigationBar</h3>
+                    <p>Pada langkah ini method <code>build</code> pada <code>MainScreen</code> dilengkapi dengan <code>Scaffold</code> yang memiliki menu navigasi bawah.</p>
+
+                    <p><strong>A. Menentukan body</strong></p>
+                    <p>Property <code>body: _pages[_selectedIndex]</code> menampilkan widget dari list <code>_pages</code> sesuai indeks tab yang aktif. Karena hanya <code>body</code> yang berganti, <code>Scaffold</code> dan menu bawah tetap berada di tempatnya.</p>
+
+                    <p><strong>B. Menambahkan BottomNavigationBar</strong></p>
+                    <ul>
+                        <li><strong><code>currentIndex: _selectedIndex</code></strong> — Menandai tab yang sedang aktif agar ikon dan labelnya disorot.</li>
+                        <li><strong><code>onTap: _onItemTapped</code></strong> — Fungsi yang dijalankan ketika sebuah tab diketuk. Flutter otomatis mengirim indeks tab ke method <code>_onItemTapped</code>.</li>
+                        <li><strong><code>selectedItemColor: Colors.amber[800]</code></strong> — Mengatur warna tab yang sedang aktif menjadi amber.</li>
+                        <li><strong><code>items</code></strong> — Daftar <code>BottomNavigationBarItem</code> yang masing-masing memiliki <code>icon</code> dan <code>label</code>, yaitu Beranda (<code>Icons.home</code>), Riwayat (<code>Icons.history</code>), dan Profil (<code>Icons.person</code>).</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/3-1.png" alt="Screenshot 3-1">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Hasil Akhir: Aplikasi Finansial Lengkap</h3>
+                    <p>Setelah seluruh langkah selesai, simpan semua file kemudian jalankan aplikasi dengan perintah <code>flutter run</code>. Aplikasi menampilkan halaman Beranda dengan sapaan, saldo, tombol aksi, dan daftar transaksi, serta menu bawah dengan tiga tab. Ketika tab Riwayat atau Profil diketuk, isi layar berganti tanpa berpindah <code>Scaffold</code>, sedangkan tombol <code>+</code> membuka halaman form tambah transaksi melalui rute <code>'/add'</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/4-1.png" alt="Screenshot Hasil Akhir Beranda">
+                        <img src="./ss/5/4-2.png" alt="Screenshot Hasil Akhir Riwayat">
+                        <img src="./ss/5/4-3.png" alt="Screenshot Hasil Akhir Profil">
+                    </div>
+                </div>
+            </section>
+
+            <section id="tugas">
+                <h2 class="section-title text-light">Tugas: Riwayat, Profil, dan Login</h2>
+                <p class="text-laprak">
+                    Tugas pada Praktikum 5 adalah membuat halaman riwayat transaksi, halaman profil yang berisi avatar, nama, email, dan tombol logout, serta satu halaman login yang berisi <em>textfield</em> email dan password beserta tombol login. Ketika tombol login ditekan, aplikasi menampilkan halaman utama beserta informasi email yang diinputkan pengguna. Ketiga halaman ini dibuat sebagai file terpisah di dalam folder <code>lib</code>.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Halaman Riwayat Transaksi (history_screen.dart)</h3>
+                    <p>Halaman ini menggantikan teks sementara "Halaman Riwayat (Kosong)" pada tab Riwayat. Berbeda dengan Beranda yang hanya menampilkan 5 transaksi terakhir, halaman ini menampilkan <strong>seluruh</strong> transaksi milik pengguna yang sedang login.</p>
+                    <ul>
+                        <li><strong><code>StatefulWidget</code> dan <code>initState()</code></strong> — Dipakai karena data diambil dari database saat halaman dibuka, lalu tampilan diperbarui dengan <code>setState()</code>.</li>
+                        <li><strong><code>_loadData()</code></strong> — Memanggil <code>DatabaseHelper.instance.getTransactions()</code> untuk mengambil transaksi milik user yang sedang login, kemudian menyimpannya ke variabel <code>_transactions</code>.</li>
+                        <li><strong><code>_loading</code></strong> — Variabel boolean untuk menampilkan <code>CircularProgressIndicator</code> selama data masih diambil.</li>
+                        <li><strong>Kondisi data kosong</strong> — Jika tidak ada transaksi, ditampilkan teks "Belum ada transaksi".</li>
+                        <li><strong><code>ListView.separated</code></strong> — Menampilkan daftar yang dapat di-<em>scroll</em> dengan garis pemisah (<code>Divider</code>) antar item. Setiap item berupa <code>ListTile</code> dengan ikon kategori (<code>leading</code>), judul, kategori dan tanggal (<code>subtitle</code>), serta nominal berwarna hijau untuk pemasukan atau merah untuk pengeluaran (<code>trailing</code>).</li>
+                        <li><strong><code>onTap</code></strong> — Membuka <code>TransactionDetailScreen</code> dengan mengirim data transaksi melalui constructor (hasil Praktikum 4).</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tugas-riwayat-1.png" alt="Screenshot Riwayat kosong">
+                        <img src="./ss/5/tugas-riwayat-2.png" alt="Screenshot Riwayat berisi transaksi">
+                        <img src="./ss/5/tugas-riwayat-3.png" alt="Screenshot Detail transaksi">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Halaman Profil (profile_screen.dart)</h3>
+                    <p>Halaman ini menampilkan identitas akun yang sedang login dan menyediakan tombol logout.</p>
+                    <ul>
+                        <li><strong><code>CircleAvatar</code></strong> — Menampilkan avatar berbentuk lingkaran dengan ikon <code>Icons.person</code>.</li>
+                        <li><strong><code>Text</code> nama dan email</strong> — Nilainya diambil dari <code>Session.currentUser</code>, yaitu data pengguna yang tersimpan saat login.</li>
+                        <li><strong><code>Column</code> dengan <code>mainAxisAlignment: center</code></strong> — Menyusun avatar, nama, email, dan tombol secara vertikal di tengah layar.</li>
+                        <li><strong>Tombol Logout</strong> — Memanggil method <code>_logout()</code> yang menjalankan <code>Session.clear()</code> untuk menghapus sesi login (di memori dan di <code>shared_preferences</code>), lalu <code>Navigator.pushNamedAndRemoveUntil(context, '/login', (route) =&gt; false)</code>. Parameter <code>(route) =&gt; false</code> menghapus seluruh halaman sebelumnya dari <em>stack</em>, sehingga pengguna tidak dapat kembali ke halaman utama dengan tombol Back.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tugas-profil-1.png" alt="Screenshot Halaman Profil">
+                        <img src="./ss/5/tugas-profil-2.png" alt="Screenshot Setelah Logout">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>C. Halaman Login (login_screen.dart)</h3>
+                    <p>Halaman login berisi dua <code>TextFormField</code> (email dan password) serta satu tombol Login, dan menjadi halaman pertama yang muncul bila pengguna belum login.</p>
+                    <ul>
+                        <li><strong><code>Form</code> dan <code>GlobalKey&lt;FormState&gt;</code></strong> — Membungkus kedua inputan agar dapat divalidasi sekaligus dengan <code>validate()</code>.</li>
+                        <li><strong>Email</strong> — Menggunakan <code>keyboardType: TextInputType.emailAddress</code>. Validator memeriksa inputan tidak kosong dan mengandung karakter <code>@</code>.</li>
+                        <li><strong>Password</strong> — Menggunakan <code>obscureText: true</code> agar teks tersembunyi. Validator memastikan inputan tidak kosong.</li>
+                        <li><strong><code>_login()</code></strong> — Setelah validasi berhasil, memanggil <code>DatabaseHelper.instance.login()</code> untuk mencocokkan email dan password dengan data pada database. Jika tidak cocok, muncul <code>SnackBar</code> "Email atau password salah".</li>
+                        <li><strong><code>Session.save(user)</code> dan <code>pushReplacementNamed(context, '/main')</code></strong> — Jika cocok, data pengguna disimpan sebagai sesi, lalu halaman login diganti dengan <code>MainScreen</code> sehingga login tidak dapat dikembalikan dengan tombol Back.</li>
+                        <li><strong>Informasi email pada halaman utama</strong> — Email yang diinputkan ditampilkan pada sapaan di halaman Beranda (<code>GreetingWidget</code>) dan pada halaman Profil.</li>
+                        <li><strong><code>_isLoading</code></strong> — Menonaktifkan tombol dan menampilkan indikator loading saat proses login berjalan.</li>
+                        <li><strong>Tombol "Daftar"</strong> — Memanggil <code>Navigator.pushNamed(context, '/register')</code> untuk membuka form pendaftaran.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tugas-login-1.png" alt="Screenshot Halaman Login">
+                        <img src="./ss/5/tugas-login-2.png" alt="Screenshot Validasi Login">
+                        <img src="./ss/5/tugas-login-3.png" alt="Screenshot Login Gagal">
+                        <img src="./ss/5/tugas-login-4.png" alt="Screenshot Beranda dengan email pengguna">
+                    </div>
+                </div>
+            </section>
+
+            <section id="tugas-tambahan">
+                <h2 class="section-title text-light">Tugas Tambahan: Penggabungan Praktikum 1 sampai 5</h2>
+                <p class="text-laprak">
+                    Hasil Praktikum 1 sampai 5 digabung menjadi satu project Flutter. Karena praktikum sebelumnya hanya berisi desain UI, navigasi, dan data statis, ditambahkan <em>local storage</em> agar data yang dimasukkan tidak hilang, ditambahkan form login dan register, dibuat video penjelasan, serta dihasilkan file APK. Seluruh file diletakkan langsung di dalam folder <code>lib</code>.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Persiapan Project dan Package</h3>
+                    <p>Project dibuat dengan perintah <code>flutter create</code>, kemudian ditambahkan package dengan perintah <code>flutter pub add</code>.</p>
+                    <ul>
+                        <li><strong><code>sqflite</code></strong> — Database SQLite lokal untuk menyimpan akun dan transaksi.</li>
+                        <li><strong><code>path</code></strong> — Membantu menyusun lokasi file database melalui fungsi <code>join()</code>.</li>
+                        <li><strong><code>shared_preferences</code></strong> — Menyimpan data kecil berpasangan kunci-nilai, dipakai untuk menyimpan ID pengguna yang sedang login agar sesi bertahan setelah aplikasi ditutup.</li>
+                        <li><strong><code>crypto</code></strong> — Menyediakan algoritma hash SHA-256 untuk mengamankan password.</li>
+                        <li><strong><code>sqflite_common_ffi_web</code></strong> — Menyediakan SQLite versi web agar aplikasi dapat di-<em>debug</em> melalui Chrome.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-1.png" alt="Screenshot pubspec.yaml">
+                        <img src="./ss/5/tambahan-2.png" alt="Screenshot struktur folder lib">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Local Storage dengan SQLite</h3>
+
+                    <p><strong>1. File models.dart</strong></p>
+                    <p>Berisi class model agar data tidak berupa <code>Map</code> mentah.</p>
+                    <ul>
+                        <li><strong><code>AppUser</code></strong> — Menyimpan <code>id</code>, <code>name</code>, dan <code>email</code> pengguna.</li>
+                        <li><strong><code>TransactionModel</code></strong> — Menyimpan <code>userId</code>, <code>title</code>, <code>amount</code>, <code>type</code> (Pemasukan/Pengeluaran), <code>category</code>, dan <code>date</code>. Getter <code>isIncome</code> dan <code>amountText</code> menentukan jenis transaksi dan membuat teks seperti <em>"- Rp 50.000"</em>.</li>
+                        <li><strong><code>toMap()</code> dan <code>fromMap()</code></strong> — Mengubah objek menjadi <code>Map</code> untuk disimpan ke SQLite, dan sebaliknya.</li>
+                        <li><strong><code>formatRupiah()</code></strong> — Mengubah angka <code>5000000</code> menjadi <code>Rp 5.000.000</code>.</li>
+                        <li><strong><code>categoryIcon()</code></strong> — Memilih ikon sesuai kategori transaksi.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-3.png" alt="Screenshot models.dart">
+                    </div>
+
+                    <p><strong>2. File database_helper.dart</strong></p>
+                    <p>Seluruh urusan database dipusatkan di file ini, sehingga halaman lain cukup memanggil fungsinya.</p>
+                    <ul>
+                        <li><strong><code>DatabaseHelper._()</code> dan <code>instance</code></strong> — Pola <em>singleton</em> agar hanya ada satu koneksi database selama aplikasi berjalan.</li>
+                        <li><strong><code>_initDb()</code></strong> — Membuat file database <code>expense_tracker.db</code> dan dua tabel melalui <code>CREATE TABLE</code>, yaitu <code>users</code> (id, name, email unik, password) dan <code>transactions</code> (id, user_id, title, amount, type, category, date).</li>
+                        <li><strong><code>_hash()</code></strong> — Mengubah password menjadi hash SHA-256 sebelum disimpan, sehingga password asli tidak tersimpan di database.</li>
+                        <li><strong><code>registerUser()</code></strong> — Memeriksa apakah email sudah terdaftar, jika belum maka data pengguna disimpan dengan <code>insert</code>. Mengembalikan <code>false</code> bila email sudah ada.</li>
+                        <li><strong><code>login()</code></strong> — Mencari pengguna dengan <code>query</code> berdasarkan email dan hash password. Mengembalikan <code>AppUser</code> bila cocok atau <code>null</code> bila tidak.</li>
+                        <li><strong><code>insertTransaction()</code> dan <code>getTransactions()</code></strong> — Menyimpan transaksi baru dan mengambil seluruh transaksi milik satu pengguna dengan <code>orderBy: 'id DESC'</code> (terbaru di atas). Karena difilter dengan <code>user_id</code>, tiap akun hanya melihat transaksinya sendiri.</li>
+                        <li><strong>Class <code>Session</code></strong> — Menyimpan pengguna yang sedang login pada variabel <code>currentUser</code> dan pada <code>shared_preferences</code>. Method <code>save()</code> dipanggil saat login, <code>restore()</code> dipanggil saat aplikasi dibuka, dan <code>clear()</code> dipanggil saat logout.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-4.png" alt="Screenshot database_helper.dart bagian tabel">
+                        <img src="./ss/5/tambahan-5.png" alt="Screenshot database_helper.dart bagian fungsi">
+                        <img src="./ss/5/tambahan-6.png" alt="Screenshot class Session">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>C. Form Register dan Login</h3>
+
+                    <p><strong>1. File user_registration_form.dart</strong></p>
+                    <p>Form pendaftaran dari Praktikum 1 dikembangkan sehingga datanya benar-benar disimpan. Method <code>_submitForm()</code> kini bersifat <code>async</code>: setelah validasi berhasil, memanggil <code>registerUser()</code>. Jika email sudah terdaftar, muncul <code>SnackBar</code> "Email sudah terdaftar". Jika berhasil, muncul pesan sukses lalu <code>Navigator.pop(context)</code> mengembalikan pengguna ke halaman login.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-7.png" alt="Screenshot Form Register">
+                        <img src="./ss/5/tambahan-8.png" alt="Screenshot Register Berhasil">
+                        <img src="./ss/5/tambahan-9.png" alt="Screenshot Email Sudah Terdaftar">
+                    </div>
+
+                    <p><strong>2. File login_screen.dart dan AuthGate pada main.dart</strong></p>
+                    <p>Halaman login dijelaskan pada bagian Tugas. Pada <code>main.dart</code> ditambahkan widget <code>AuthGate</code> yang menjadi rute <code>'/'</code>. Widget ini menggunakan <code>FutureBuilder</code> untuk menjalankan <code>Session.restore()</code>. Selama proses berjalan ditampilkan <code>CircularProgressIndicator</code>. Jika sesi ditemukan, pengguna langsung diarahkan ke <code>MainScreen</code>, dan jika tidak, ke <code>LoginScreen</code>. Dengan cara ini pengguna tidak perlu login ulang setiap kali aplikasi dibuka. Rute pada <code>routes</code> bertambah menjadi <code>'/'</code>, <code>'/login'</code>, <code>'/register'</code>, <code>'/main'</code>, dan <code>'/add'</code>.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-10.png" alt="Screenshot main.dart dengan AuthGate">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>D. Menghubungkan Dashboard, Tambah Transaksi, dan Detail ke Database</h3>
+
+                    <p><strong>1. File dashboard_screen.dart (Praktikum 1, 2, dan 4)</strong></p>
+                    <ul>
+                        <li><strong>Diubah menjadi <code>StatefulWidget</code></strong> — Agar data dapat dimuat dari database dan tampilan diperbarui.</li>
+                        <li><strong><code>_loadData()</code></strong> — Mengambil transaksi milik pengguna yang sedang login.</li>
+                        <li><strong><code>_balance</code></strong> — Getter yang menghitung saldo, yaitu jumlah pemasukan dikurangi jumlah pengeluaran, menggantikan saldo statis "Rp 5.000.000".</li>
+                        <li><strong><code>GreetingWidget</code></strong> — Menampilkan "Halo, [nama]" dan email dari pengguna yang login.</li>
+                        <li><strong><code>BalanceCardWidget</code></strong> — Kartu saldo dengan ikon mata dari Praktikum 1 yang kini menampilkan saldo hasil perhitungan.</li>
+                        <li><strong><code>ActionButtonsWidget</code></strong> — Tombol Pemasukan dan Pengeluaran membuka form tambah transaksi dengan jenis yang sudah terpilih, sedangkan tombol Transfer menampilkan <code>SnackBar</code> "belum tersedia" karena tidak memiliki fungsi pada modul.</li>
+                        <li><strong><code>RecentTransactionsWidget</code></strong> — Menampilkan 5 transaksi terakhir dari database, dan mengetuk item membuka halaman detail.</li>
+                        <li><strong><code>_openAdd()</code></strong> — Memanggil <code>Navigator.pushNamed(context, '/add', arguments: type)</code>. Kata kunci <code>await</code> membuat aplikasi menunggu halaman form ditutup, lalu <code>_loadData()</code> dipanggil agar data langsung diperbarui.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-11.png" alt="Screenshot Dashboard kosong">
+                        <img src="./ss/5/tambahan-12.png" alt="Screenshot Dashboard berisi data">
+                    </div>
+
+                    <p><strong>2. File add_transaction_screen.dart (Praktikum 3 dan 4)</strong></p>
+                    <ul>
+                        <li><strong>Input Judul, Nominal, dan Tanggal</strong> — Tanggal bersifat <code>readOnly</code> dan diisi melalui <code>showDatePicker</code> pada tombol plus, dengan format <code>DD/MM/YYYY</code>. Semua input wajib diisi (validator).</li>
+                        <li><strong>Validator Nominal</strong> — Menggunakan <code>int.tryParse()</code> untuk memastikan nilainya angka dan lebih dari 0.</li>
+                        <li><strong>Dropdown Jenis dan Kategori</strong> — Dua <code>DropdownButtonFormField</code>. Jenis (Pemasukan/Pengeluaran) diperlukan agar saldo dapat dihitung.</li>
+                        <li><strong><code>didChangeDependencies()</code></strong> — Membaca argumen dari <code>ModalRoute.of(context)?.settings.arguments</code> sehingga jenis transaksi otomatis terpilih sesuai tombol yang ditekan di Dashboard.</li>
+                        <li><strong><code>_save()</code></strong> — Setelah validasi berhasil, memanggil <code>insertTransaction()</code> untuk menyimpan ke SQLite, menampilkan <code>SnackBar</code> sukses, lalu <code>Navigator.pop(context)</code>.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-13.png" alt="Screenshot Form Tambah Transaksi">
+                        <img src="./ss/5/tambahan-14.png" alt="Screenshot Date Picker">
+                        <img src="./ss/5/tambahan-15.png" alt="Screenshot Validasi Form">
+                    </div>
+
+                    <p><strong>3. File transaction_detail_screen.dart (Praktikum 4)</strong></p>
+                    <p>Menerima data dari halaman sebelumnya melalui constructor dengan kata kunci <code>required</code>. Ditambahkan parameter <code>isIncome</code> yang menentukan warna tampilan, hijau untuk pemasukan dan merah untuk pengeluaran. Method <code>_buildDetailRow()</code> dipakai untuk merapikan baris Kategori, Tanggal, dan Status.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-16.png" alt="Screenshot Detail Transaksi">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>H. Generate File APK</h3>
+                    <p>File APK dihasilkan dengan perintah berikut.</p>
+                    <ul>
+                        <li><strong><code>flutter build apk --release</code></strong> — Mengompilasi aplikasi dalam mode <em>release</em> menjadi file APK yang siap dipasang.</li>
+                        <li><strong>Lokasi hasil</strong> — <code>build\app\outputs\flutter-apk\app-release.apk</code> dengan ukuran sekitar 54,4 MB.</li>
+                        <li><strong><code>flutter install</code></strong> — Memasang APK langsung ke smartphone yang terhubung melalui USB. APK juga dapat disalin ke smartphone lalu dipasang secara manual.</li>
+                    </ul>
+                    <div class="img-placeholder">
+                        <img src="./ss/5/tambahan-17.png" alt="Screenshot build berhasil">
+                        <img src="./ss/5/tambahan-18.png" alt="Screenshot file APK">
+                    </div>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa <code>Named Routes</code> membuat navigasi lebih terpusat dan rapi karena seluruh rute didaftarkan pada <code>routes</code> di <code>MaterialApp</code> dan dipanggil cukup dengan <code>Navigator.pushNamed()</code>. Widget <code>BottomNavigationBar</code> yang dikelola oleh <code>StatefulWidget</code> dengan variabel <code>_selectedIndex</code> memungkinkan pengguna berpindah antar halaman utama tanpa berpindah <code>Scaffold</code>.
+                        Pada tugas, halaman riwayat, profil, dan login berhasil dibuat, dan email yang diinputkan saat login ditampilkan pada halaman utama. Pada tugas tambahan, penggunaan SQLite melalui <code>sqflite</code> dan <code>shared_preferences</code> membuat data akun, transaksi, dan sesi login tidak hilang setelah aplikasi ditutup, sedangkan hash SHA-256 mengamankan password pengguna.
+                        Dengan menggabungkan hasil Praktikum 1 sampai 5, dihasilkan satu aplikasi keuangan yang utuh, dilengkapi fitur register dan login, serta berhasil dibangun menjadi file APK yang dapat dipasang pada smartphone Android.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
