@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Aplikasi Mobile - State Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5 mt-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 6: State Management pada Aplikasi ResepKu - setState() dan Provider (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    <em>State</em> adalah data yang dapat berubah selama aplikasi berjalan dan memengaruhi tampilan antarmuka, sesuai prinsip <code>UI = f(state)</code>. Pada Flutter, state dibedakan menjadi dua jenis. <strong>State lokal</strong> (<em>ephemeral state</em>) hanya dibutuhkan oleh satu widget dan dikelola menggunakan <code>StatefulWidget</code> dengan fungsi <code>setState()</code>. Sebaliknya, <strong>app state</strong> dibutuhkan oleh banyak widget dan halaman sekaligus, sehingga perlu disimpan di tempat yang dapat diakses bersama, salah satunya menggunakan package <code>provider</code> yang memanfaatkan class <code>ChangeNotifier</code> dan method <code>notifyListeners()</code>.
+                    <br><br>
+                    Pada praktikum ini dibangun aplikasi <strong>ResepKu</strong>, yaitu aplikasi daftar resep masakan. Fitur jumlah porsi pada halaman detail dibuat dengan <code>setState()</code> karena hanya dibutuhkan oleh satu halaman. Fitur favorit kemudian dicoba terlebih dahulu dengan state lokal untuk melihat keterbatasannya, lalu diperbaiki menggunakan <code>Provider</code> karena data favorit dibutuhkan oleh daftar resep, badge di <code>AppBar</code>, halaman detail, dan halaman Favorit. Pembacaan state dilakukan dengan <code>context.watch</code>, <code>context.read</code>, dan <code>Consumer</code>. Project ResepKu ini akan terus dikembangkan pada modul-modul berikutnya.
+                </p>
+                <a href="https://github.com/PAJILAPIP/2411531008_KelasB_AppMob_ResepKu" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu membuat state lokal dengan <code>StatefulWidget</code> dan <code>setState()</code> pada fitur jumlah porsi di halaman detail.</li>
+                    <li>Mahasiswa mampu menjelaskan keterbatasan state lokal ketika satu data dibutuhkan oleh banyak widget dan halaman.</li>
+                    <li>Mahasiswa mampu membuat state global dengan package <code>provider</code> (<code>ChangeNotifier</code> dan <code>MultiProvider</code>) pada fitur favorit.</li>
+                    <li>Mahasiswa mampu membaca state dengan <code>context.watch</code>, <code>context.read</code>, dan <code>Consumer</code> di beberapa halaman.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK (versi stable)</li>
+                            <li>Code Editor: Visual Studio Code atau Android Studio</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Menyiapkan Project ResepKu</h3>
+                    <p>Project dibuat dengan perintah <code>flutter create resepku</code> yang membuat kerangka aplikasi Flutter baru, lalu <code>cd resepku</code> untuk masuk ke foldernya. Pada folder <code>lib/</code> dibuat lima folder untuk memisahkan tanggung jawab kode, yaitu <code>models</code>, <code>data</code>, <code>providers</code>, <code>pages</code>, dan <code>widgets</code>. File <code>test/widget_test.dart</code> bawaan template dihapus karena merujuk class <code>MyApp</code> yang sudah tidak ada dan modul ini belum menggunakan testing.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Membuat Model Recipe dan Data Dummy</h3>
+                    <p>Class <code>Recipe</code> merepresentasikan satu resep dan berisi field <code>id</code>, <code>name</code>, <code>cuisine</code>, <code>difficulty</code>, waktu persiapan dan memasak, jumlah porsi, kalori per porsi, <code>rating</code>, <code>image</code>, dan daftar <code>ingredients</code>. Seluruh field bertipe <code>final</code> dan constructor-nya <code>const</code> dengan <code>required</code> agar objek resep tidak dapat diubah dan semua data wajib diisi. Getter <code>totalTimeMinutes</code> menghitung total waktu memasak (<code>prepTimeMinutes + cookTimeMinutes</code>) dan dipanggil tanpa tanda kurung seperti field biasa.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/models/recipe.dart</span>
+                        </div>
+<pre class="code-window-body"><code>class Recipe {
+  final int id;
+  final String name;
+  final String cuisine;
+  final String difficulty;
+  final int prepTimeMinutes;
+  final int cookTimeMinutes;
+  final int servings;
+  final int caloriesPerServing;
+  final double rating;
+  final String image; // dipakai mulai Modul 7
+  final List&lt;String&gt; ingredients;
+
+  const Recipe({
+    required this.id,
+    required this.name,
+    required this.cuisine,
+    required this.difficulty,
+    required this.prepTimeMinutes,
+    required this.cookTimeMinutes,
+    required this.servings,
+    required this.caloriesPerServing,
+    required this.rating,
+    required this.image,
+    required this.ingredients,
+  });
+
+  int get totalTimeMinutes =&gt; prepTimeMinutes + cookTimeMinutes;
+}</code></pre>
+                    </div>
+                    <p>Data enam resep pertama dari <code>dummyjson.com/recipes</code> disimpan sebagai <code>const List&lt;Recipe&gt; dummyRecipes</code> pada file <code>lib/data/dummy_recipes.dart</code>. Pada modul berikutnya data yang sama akan diambil langsung dari API sehingga tampilan tidak perlu diubah.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Membuat Footer Identitas, Halaman Home, dan RecipeTile</h3>
+                    <p>Widget <code>IdentityFooter</code> menampilkan NIM dan nama pada bagian bawah setiap halaman. Footer dipasang melalui parameter <code>builder</code> pada <code>MaterialApp</code>, yang membungkus <code>Navigator</code> sehingga footer otomatis tampil di semua halaman tanpa perlu ditambahkan pada setiap <code>Scaffold</code>. <code>MediaQuery.removePadding(removeBottom: true)</code> digunakan agar ruang aman bawah tidak dihitung dua kali, karena sudah diurus oleh <code>SafeArea</code> pada footer.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/widgets/identity_footer.dart</span>
+                        </div>
+<pre class="code-window-body"><code>const String kNim = '2411531008';
+const String kNama = 'Muhammad Fazil Afif';
+
+class IdentityFooter extends StatelessWidget {
+  const IdentityFooter({super.key, required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: MediaQuery.removePadding(
+            context: context,
+            removeBottom: true,
+            child: child,
+          ),
+        ),
+        Material(
+          color: Colors.black87,
+          child: SafeArea(
+            top: false,
+            child: SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(
+                  '$kNim • $kNama',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}</code></pre>
+                    </div>
+                    <p><code>HomePage</code> berupa <code>StatelessWidget</code> yang menampilkan <code>ListView</code> berisi <code>RecipeTile</code> untuk setiap data pada <code>dummyRecipes</code> menggunakan perulangan <code>for</code> di dalam list. <code>RecipeTile</code> menampilkan <code>ListTile</code> dengan avatar huruf pertama nama resep, judul, dan subtitle berisi jenis masakan, total waktu, serta rating. Properti <code>onTap</code> memanggil <code>Navigator.push</code> menuju <code>DetailPage</code> dengan mengirim objek <code>recipe</code> melalui constructor.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Halaman Detail dengan setState() (Checkpoint 1)</h3>
+                    <p><code>DetailPage</code> dibuat sebagai <code>StatefulWidget</code> karena jumlah porsi berubah ketika tombol plus atau minus ditekan. Terdapat tiga hal penting pada class state-nya. Pertama, nilai awal <code>_servings</code> diisi di <code>initState()</code> dari <code>widget.recipe.servings</code>; variabel dideklarasikan <code>late int</code> karena baru diisi setelah objek dibuat. Kedua, data milik widget diakses melalui <code>widget.recipe</code>. Ketiga, setiap perubahan nilai dibungkus dengan <code>setState()</code> agar Flutter menjalankan ulang <code>build()</code> dan tampilan diperbarui.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/detail_page.dart (state lokal porsi)</span>
+                        </div>
+<pre class="code-window-body"><code>class _DetailPageState extends State&lt;DetailPage&gt; {
+  late int _servings; // state lokal: hanya halaman ini yang butuh
+
+  @override
+  void initState() {
+    super.initState();
+    _servings = widget.recipe.servings; // nilai awal dari data resep
+  }
+
+  void _addServing() {
+    setState(() =&gt; _servings++);
+  }
+
+  void _removeServing() {
+    if (_servings &gt; 1) {
+      setState(() =&gt; _servings--);
+    }
+  }
+  // ...
+}</code></pre>
+                    </div>
+                    <p>Total kalori dihitung pada <code>build()</code> dengan <code>recipe.caloriesPerServing * _servings</code>, sehingga otomatis ikut berubah setiap porsi berubah. Tombol minus dibuat menggunakan <code>IconButton.filledTonal</code> dengan <code>onPressed: _servings &gt; 1 ? _removeServing : null</code>. Apabila <code>onPressed</code> bernilai <code>null</code>, Flutter otomatis menampilkan tombol dalam keadaan nonaktif, sehingga baris inilah yang menyebabkan tombol minus tidak aktif ketika porsi bernilai 1.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/detail_page.dart (tombol porsi)</span>
+                        </div>
+<pre class="code-window-body"><code>final totalCalories = recipe.caloriesPerServing * _servings;
+
+IconButton.filledTonal(
+  onPressed: _servings &gt; 1 ? _removeServing : null, // null = tombol nonaktif
+  icon: const Icon(Icons.remove),
+),
+Text('$_servings', style: textTheme.titleLarge),
+IconButton.filledTonal(
+  onPressed: _addServing,
+  icon: const Icon(Icons.add),
+),</code></pre>
+                    </div>
+                    <p><strong>Checkpoint 1:</strong> halaman detail Classic Margherita Pizza dengan porsi 6 menampilkan total kalori 1800 kkal (6 &times; 300), dan tombol minus tidak aktif ketika porsi bernilai 1. Footer NIM dan nama terlihat pada setiap screenshot.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/6/1-1.png" alt="Screenshot Checkpoint 1 porsi 6">
+                        <img src="./ss/6/1-2.png" alt="Screenshot Checkpoint 1 tombol minus nonaktif">
+                        <img src="./ss/6/1-3.png" alt="Screenshot Checkpoint 1 baris kode">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>5. Eksperimen Favorit dengan State Lokal</h3>
+                    <p>Sebelum memakai Provider, dicoba cara paling sederhana terlebih dahulu: <code>RecipeTile</code> diubah menjadi <code>StatefulWidget</code> dan menyimpan status favoritnya sendiri pada variabel <code>bool _isFavorite = false</code>. Ikon hati pada <code>trailing</code> berganti antara <code>Icons.favorite</code> (merah) dan <code>Icons.favorite_border</code>, dan nilainya dibalik di dalam <code>setState()</code> ketika ditekan.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/widgets/recipe_tile.dart (versi eksperimen)</span>
+                        </div>
+<pre class="code-window-body"><code>class _RecipeTileState extends State&lt;RecipeTile&gt; {
+  bool _isFavorite = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final recipe = widget.recipe;
+    return ListTile(
+      // ...
+      trailing: IconButton(
+        icon: Icon(
+          _isFavorite ? Icons.favorite : Icons.favorite_border,
+          color: _isFavorite ? Colors.red : null,
+        ),
+        onPressed: () =&gt; setState(() =&gt; _isFavorite = !_isFavorite),
+      ),
+      // ...
+    );
+  }
+}</code></pre>
+                    </div>
+                    <p>Hasil pengamatan eksperimen ini dijawab pada bagian Pertanyaan Analisis nomor 1. Kesimpulannya, data favorit dibutuhkan di banyak tempat (daftar resep, badge, halaman detail, dan halaman Favorit), sedangkan data yang disimpan di dalam setiap tile tidak dapat dibaca widget lain. Oleh karena itu data harus dipindahkan ke atas menggunakan Provider.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>6. Memasang Provider dan Membuat FavoriteProvider</h3>
+                    <p>Package dipasang dengan perintah <code>flutter pub add provider</code> yang menambahkan <code>provider</code> ke <code>pubspec.yaml</code> sekaligus mengunduhnya. Kemudian dibuat class <code>FavoriteProvider</code> yang <code>extends ChangeNotifier</code> sebagai tempat state global favorit.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/providers/favorite_provider.dart</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/foundation.dart';
+import 'package:resepku/models/recipe.dart';
+
+class FavoriteProvider extends ChangeNotifier {
+  final List&lt;Recipe&gt; _items = [];
+
+  // Dari luar hanya boleh dibaca, tidak boleh diubah langsung
+  List&lt;Recipe&gt; get items =&gt; List.unmodifiable(_items);
+
+  int get count =&gt; _items.length;
+
+  bool isFavorite(Recipe recipe) =&gt; _items.any((r) =&gt; r.id == recipe.id);
+
+  void toggle(Recipe recipe) {
+    if (isFavorite(recipe)) {
+      _items.removeWhere((r) =&gt; r.id == recipe.id);
+    } else {
+      _items.add(recipe);
+    }
+    notifyListeners(); // beri tahu semua widget yang "mendengarkan"
+  }
+
+  void clear() {
+    _items.clear();
+    notifyListeners();
+  }
+}</code></pre>
+                    </div>
+                    <ul>
+                        <li><strong><code>extends ChangeNotifier</code></strong> — Memberi class kemampuan menyimpan daftar listener dan memanggil <code>notifyListeners()</code>.</li>
+                        <li><strong><code>_items</code> dan <code>items</code></strong> — <code>_items</code> bersifat private, sedangkan <code>items</code> adalah getter <code>List.unmodifiable</code>, sehingga dari luar data hanya dapat dibaca dan setiap perubahan wajib melalui <code>toggle()</code> atau <code>clear()</code>.</li>
+                        <li><strong><code>isFavorite()</code></strong> — Memeriksa apakah resep ada di daftar dengan membandingkan <code>id</code>, bukan objeknya, karena pada modul berikutnya objek <code>Recipe</code> akan dibuat ulang dari JSON.</li>
+                        <li><strong><code>toggle()</code></strong> — Menambahkan resep jika belum favorit atau menghapusnya jika sudah, lalu memanggil <code>notifyListeners()</code> untuk memberi tahu semua widget yang mendengarkan.</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h3>7. Memasang Provider di Atas MaterialApp</h3>
+                    <p><code>ChangeNotifierProvider</code> dipasang di atas <code>MaterialApp</code> pada <code>main()</code> agar seluruh halaman (route) dapat mengakses <code>FavoriteProvider</code>. <code>MultiProvider</code> digunakan agar provider lain mudah ditambahkan di kemudian hari, seperti pada Latihan 1. Baris <code>builder</code> untuk footer identitas tetap dipertahankan. Setelah mengubah <code>main.dart</code> wajib dilakukan <em>hot restart</em>, bukan hot reload, karena hot reload tidak menjalankan ulang <code>main()</code> sehingga provider belum terpasang dan muncul <code>ProviderNotFoundException</code>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/main.dart</span>
+                        </div>
+<pre class="code-window-body"><code>void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) =&gt; FavoriteProvider()),
+      ],
+      child: const ResepKuApp(),
+    ),
+  );
+}
+
+class ResepKuApp extends StatelessWidget {
+  const ResepKuApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'ResepKu',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.deepOrange),
+      builder: (context, child) =&gt; IdentityFooter(child: child!), // tetap dipertahankan
+      home: const HomePage(),
+    );
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>8. RecipeTile dan Halaman Detail Membaca Data dari Provider</h3>
+                    <p><code>RecipeTile</code> dikembalikan menjadi <code>StatelessWidget</code> karena data favorit tidak lagi disimpan di tile. Pada <code>build()</code> digunakan <code>context.watch&lt;FavoriteProvider&gt;().isFavorite(recipe)</code> agar widget ikut <em>rebuild</em> ketika daftar favorit berubah. Pada callback <code>onPressed</code> digunakan <code>context.read&lt;FavoriteProvider&gt;().toggle(recipe)</code> karena di dalam callback cukup memanggil method tanpa perlu mendengarkan perubahan.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/widgets/recipe_tile.dart (versi Provider)</span>
+                        </div>
+<pre class="code-window-body"><code>class RecipeTile extends StatelessWidget {
+  const RecipeTile({super.key, required this.recipe});
+  final Recipe recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    // watch: widget ini ikut rebuild saat daftar favorit berubah
+    final isFavorite = context.watch&lt;FavoriteProvider&gt;().isFavorite(recipe);
+
+    return ListTile(
+      // ...
+      trailing: IconButton(
+        icon: Icon(
+          isFavorite ? Icons.favorite : Icons.favorite_border,
+          color: isFavorite ? Colors.red : null,
+        ),
+        // read: di dalam callback cukup "membaca", tidak perlu listen
+        onPressed: () =&gt; context.read&lt;FavoriteProvider&gt;().toggle(recipe),
+      ),
+      // ...
+    );
+  }
+}</code></pre>
+                    </div>
+                    <p>Pada <code>detail_page.dart</code> ditambahkan import <code>provider</code> dan <code>favorite_provider</code>, satu baris <code>context.watch</code> setelah <code>totalCalories</code>, serta parameter <code>actions</code> pada <code>AppBar</code> berisi ikon hati. Halaman ini sekarang memakai dua jenis state sekaligus: <code>_servings</code> sebagai state lokal (<code>setState</code>) dan favorit sebagai state global (Provider).</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/detail_page.dart (tombol favorit)</span>
+                        </div>
+<pre class="code-window-body"><code>final isFavorite = context.watch&lt;FavoriteProvider&gt;().isFavorite(recipe);
+
+appBar: AppBar(
+  title: Text(recipe.name),
+  actions: [
+    IconButton(
+      icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+      onPressed: () =&gt; context.read&lt;FavoriteProvider&gt;().toggle(recipe),
+    ),
+  ],
+),</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>9. Halaman Favorit dan Badge Jumlah Favorit</h3>
+                    <p><code>FavoritePage</code> menggunakan <code>Consumer&lt;FavoriteProvider&gt;</code>, yaitu bentuk widget dari <code>context.watch</code>, di mana fungsi <code>builder</code> dijalankan ulang setiap kali <code>notifyListeners()</code> dipanggil. Apabila <code>favorite.count == 0</code> ditampilkan pesan <em>"Belum ada resep favorit"</em>, sedangkan jika ada isi ditampilkan <code>ListView</code> berisi resep favorit dengan tombol hapus pada <code>trailing</code> yang memanggil <code>favorite.toggle(recipe)</code>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/favorite_page.dart (awal)</span>
+                        </div>
+<pre class="code-window-body"><code>class FavoritePage extends StatelessWidget {
+  const FavoritePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Favorit Saya')),
+      body: Consumer&lt;FavoriteProvider&gt;(
+        builder: (context, favorite, child) {
+          if (favorite.count == 0) {
+            return const Center(
+              child: Text(
+                'Belum ada resep favorit.\nTekan ikon hati di daftar resep.',
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          return ListView(
+            children: [
+              for (final recipe in favorite.items)
+                ListTile(
+                  title: Text(recipe.name),
+                  subtitle: Text(recipe.cuisine),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () =&gt; favorite.toggle(recipe),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}</code></pre>
+                    </div>
+                    <p>Widget <code>FavoriteBadgeButton</code> dibuat terpisah agar hanya bagian ini yang <em>rebuild</em> ketika jumlah favorit berubah. Widget <code>Badge</code> dari Material 3 menampilkan angka jumlah favorit di atas ikon hati dan disembunyikan dengan <code>isLabelVisible: count &gt; 0</code> ketika jumlahnya nol. Saat ditekan, tombol ini membuka <code>FavoritePage</code> menggunakan <code>Navigator.push</code>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/widgets/favorite_badge_button.dart</span>
+                        </div>
+<pre class="code-window-body"><code>class FavoriteBadgeButton extends StatelessWidget {
+  const FavoriteBadgeButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final count = context.watch&lt;FavoriteProvider&gt;().count;
+
+    return IconButton(
+      tooltip: 'Favorit saya',
+      icon: Badge(
+        isLabelVisible: count &gt; 0,
+        label: Text('$count'),
+        child: const Icon(Icons.favorite),
+      ),
+      onPressed: () =&gt; Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =&gt; const FavoritePage()),
+      ),
+    );
+  }
+}</code></pre>
+                    </div>
+                    <p>Widget tersebut dipasang pada <code>actions</code> di <code>AppBar</code> milik <code>HomePage</code>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/home_page.dart</span>
+                        </div>
+<pre class="code-window-body"><code>appBar: AppBar(
+  title: const Text('ResepKu'),
+  actions: const [FavoriteBadgeButton()],
+),</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="checkpoint-2">
+                <h2 class="section-title text-light">Checkpoint 2 dan Tabel Uji</h2>
+                <p class="text-laprak">
+                    Setelah <em>hot restart</em>, aplikasi diuji menggunakan enam skenario pada Langkah C.7. Footer NIM dan nama terlihat pada setiap screenshot.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Checkpoint 2</h3>
+                    <p>Screenshot Home dengan badge bernilai 2, halaman Detail dengan ikon hati terisi, dan halaman Favorit.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/6/2-1.png" alt="Screenshot Checkpoint 2 Home dengan badge 2">
+                        <img src="./ss/6/2-2.png" alt="Screenshot Checkpoint 2 Detail ikon hati terisi">
+                        <img src="./ss/6/2-3.png" alt="Screenshot Checkpoint 2 halaman Favorit">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Tabel Uji Langkah C.7</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Skenario</th>
+                                    <th>Hasil yang Diharapkan</th>
+                                    <th>Sesuai?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Tap ikon hati pada Margherita dan Alfredo di Home</td>
+                                    <td>Ikon berwarna merah, badge menunjukkan angka 2</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Buka detail Margherita</td>
+                                    <td>Ikon hati di AppBar terisi</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Di halaman detail, tap ikon hati, lalu kembali ke Home</td>
+                                    <td>Ikon Margherita kosong, badge menunjukkan angka 1</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Tap badge di AppBar</td>
+                                    <td>Halaman Favorit hanya berisi Alfredo</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Hapus Alfredo dari halaman Favorit, lalu kembali</td>
+                                    <td>Muncul pesan "Belum ada resep favorit", badge hilang</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>Ubah porsi menjadi 2, kembali ke Home, lalu buka lagi resep yang sama</td>
+                                    <td>Porsi kembali ke nilai awal, karena state lokal ikut dibuang ketika halaman ditutup</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="analisis">
+                <h2 class="section-title text-light">Pertanyaan Analisis</h2>
+
+                <div class="step-box">
+                    <h3>1. Jawaban Tiga Pertanyaan pada Langkah B.2</h3>
+                    <p><strong>a. Apakah ikon hati berubah? Mengapa?</strong> Ya, ikon hati berubah. Variabel <code>_isFavorite</code> berada di dalam <code>_RecipeTileState</code>, dan ketika ikon ditekan nilainya dibalik di dalam <code>setState()</code>. Pemanggilan <code>setState()</code> membuat Flutter menjalankan ulang <code>build()</code> milik tile tersebut sehingga ikon berganti antara <code>favorite_border</code> dan <code>favorite</code> berwarna merah.</p>
+                    <p><strong>b. Dapatkah jumlah resep favorit ditampilkan di judul AppBar HomePage?</strong> Tidak dapat. Data <code>_isFavorite</code> berada di dalam class <code>_RecipeTileState</code> milik masing-masing tile dan bersifat private, sehingga tersimpan terpisah di setiap tile. <code>HomePage</code> hanya membuat <code>RecipeTile</code> dan tidak memiliki cara untuk membaca atau menghitung nilai state milik widget anaknya, sehingga jumlah favorit tidak dapat diketahui.</p>
+                    <p><strong>c. Bagaimana halaman detail mengetahui bahwa resep tersebut favorit?</strong> Halaman detail tidak dapat mengetahuinya. <code>DetailPage</code> hanya menerima objek <code>recipe</code> melalui constructor, sedangkan status favorit tersimpan di state milik tile pada halaman lain. Tidak ada jalur bagi data tersebut untuk sampai ke <code>DetailPage</code> kecuali dikirim manual, dan itu pun hanya berupa salinan sehingga perubahan di detail tidak akan memperbarui tile.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Mengapa Jumlah Porsi Tetap Menggunakan setState()?</h3>
+                    <p>Jumlah porsi hanya dibutuhkan oleh satu halaman, yaitu <code>DetailPage</code>, sehingga tergolong state lokal yang cukup disimpan sebagai field di class <code>State</code>. Memasukkannya ke Provider tidak diperlukan dan justru membuat data yang hanya relevan untuk satu halaman menjadi tersimpan secara global. Hal ini sesuai hasil skenario 6 pada Langkah C.7, di mana porsi kembali ke nilai awal ketika halaman ditutup lalu dibuka lagi karena state lokal ikut dibuang bersama halamannya. Perilaku tersebut memang diinginkan, sedangkan data favorit harus tetap bertahan ketika berpindah halaman sehingga cocok disimpan di Provider.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Memindahkan ChangeNotifierProvider ke Dalam HomePage</h3>
+                    <p>Ketika <code>ChangeNotifierProvider</code> dipindahkan dari <code>main()</code> ke dalam <code>HomePage</code> (membungkus <code>Scaffold</code>), halaman Favorit gagal dibuka dan muncul error <code>ProviderNotFoundException</code> karena <code>FavoritePage</code> tidak dapat menemukan <code>FavoriteProvider</code>. Penyebabnya adalah posisi provider di <em>widget tree</em>: provider hanya dapat diakses oleh widget yang berada di bawahnya (keturunannya). Halaman yang dibuka dengan <code>Navigator.push</code> ditempatkan sebagai <em>route</em> baru di dalam <code>Navigator</code> milik <code>MaterialApp</code>, sejajar dengan <code>HomePage</code> dan bukan sebagai anak dari <code>HomePage</code>. Dengan demikian <code>FavoritePage</code> (begitu juga <code>DetailPage</code>) berada di luar cakupan provider. Oleh karena itu provider harus dipasang di atas <code>MaterialApp</code>. Setelah percobaan, kode dikembalikan seperti semula.</p>
+                </div>
+            </section>
+
+            <section id="latihan-1">
+                <h2 class="section-title text-light">Latihan 1: Tema Gelap dan Terang</h2>
+                <p class="text-laprak">
+                    Latihan ini menambahkan halaman Pengaturan berisi <code>SwitchListTile</code> "Mode gelap" yang mengubah tema seluruh aplikasi.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Membuat ThemeProvider</h3>
+                    <p>Dibuat class <code>ThemeProvider</code> yang <code>extends ChangeNotifier</code> dengan field <code>ThemeMode _themeMode</code> bernilai awal <code>ThemeMode.light</code>, getter <code>themeMode</code> dan <code>isDark</code>, serta method <code>setDarkMode(bool value)</code> untuk mengubah mode. Method ini memanggil <code>notifyListeners()</code> setelah mengubah nilai agar widget yang mendengarkan ikut diperbarui.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/providers/theme_provider.dart</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+
+class ThemeProvider extends ChangeNotifier {
+  ThemeMode _themeMode = ThemeMode.light;
+
+  ThemeMode get themeMode =&gt; _themeMode;
+
+  bool get isDark =&gt; _themeMode == ThemeMode.dark;
+
+  void setDarkMode(bool value) {
+    _themeMode = value ? ThemeMode.dark : ThemeMode.light;
+    notifyListeners();
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Mendaftarkan Provider dan Mengatur Tema pada MaterialApp</h3>
+                    <p><code>ThemeProvider</code> didaftarkan sebagai provider kedua di dalam <code>MultiProvider</code>. Pada <code>MaterialApp</code> ditambahkan <code>darkTheme</code> dengan <code>brightness: Brightness.dark</code> dan <code>themeMode</code> yang dibaca dari <code>ThemeProvider</code>. Pembacaan menggunakan <code>context.watch</code>, bukan <code>context.read</code>, karena <code>MaterialApp</code> harus <em>rebuild</em> setiap mode tema berubah; dengan <code>read</code> nilainya hanya dibaca sekali sehingga tema tidak berganti. Baris <code>builder</code> untuk footer identitas tidak dihapus.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/main.dart (Latihan 1)</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:resepku/pages/home_page.dart';
+import 'package:resepku/providers/favorite_provider.dart';
+import 'package:resepku/providers/theme_provider.dart';
+import 'package:resepku/widgets/identity_footer.dart';
+
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) =&gt; FavoriteProvider()),
+        ChangeNotifierProvider(create: (context) =&gt; ThemeProvider()),
+      ],
+      child: const ResepKuApp(),
+    ),
+  );
+}
+
+class ResepKuApp extends StatelessWidget {
+  const ResepKuApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // watch: MaterialApp harus rebuild saat mode tema berubah
+    final themeMode = context.watch&lt;ThemeProvider&gt;().themeMode;
+
+    return MaterialApp(
+      title: 'ResepKu',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(colorSchemeSeed: Colors.deepOrange),
+      darkTheme: ThemeData(
+        colorSchemeSeed: Colors.deepOrange,
+        brightness: Brightness.dark,
+      ),
+      themeMode: themeMode,
+      builder: (context, child) =&gt; IdentityFooter(child: child!), // jangan dihapus
+      home: const HomePage(),
+    );
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>C. Membuat Halaman Pengaturan dan Tombol di AppBar</h3>
+                    <p><code>SettingsPage</code> berisi <code>SwitchListTile</code> dengan <code>value</code> dari <code>theme.isDark</code> (dibaca dengan <code>watch</code> agar tampilan switch selalu sesuai), dan <code>onChanged</code> yang memanggil <code>setDarkMode(value)</code> menggunakan <code>read</code> karena berada di dalam callback. Pada <code>AppBar</code> milik <code>HomePage</code> ditambahkan <code>IconButton</code> berikon <code>Icons.settings</code> yang membuka halaman Pengaturan melalui <code>Navigator.push</code>, diletakkan sebelum <code>FavoriteBadgeButton</code>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/settings_page.dart</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:resepku/providers/theme_provider.dart';
+
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.watch&lt;ThemeProvider&gt;();
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Pengaturan')),
+      body: ListView(
+        children: [
+          SwitchListTile(
+            secondary: const Icon(Icons.dark_mode),
+            title: const Text('Mode gelap'),
+            subtitle: const Text('Ubah tampilan seluruh aplikasi'),
+            value: theme.isDark,
+            onChanged: (value) =&gt; context.read&lt;ThemeProvider&gt;().setDarkMode(value),
+          ),
+        ],
+      ),
+    );
+  }
+}</code></pre>
+                    </div>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/home_page.dart (Latihan 1)</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:resepku/pages/settings_page.dart';
+
+// ...
+appBar: AppBar(
+  title: const Text('ResepKu'),
+  actions: [
+    IconButton(
+      tooltip: 'Pengaturan',
+      icon: const Icon(Icons.settings),
+      onPressed: () =&gt; Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =&gt; const SettingsPage()),
+      ),
+    ),
+    const FavoriteBadgeButton(),
+  ],
+),</code></pre>
+                    </div>
+                    <div class="img-placeholder">
+                        <img src="./ss/6/3-1.png" alt="Screenshot Latihan 1 halaman Pengaturan">
+                        <img src="./ss/6/3-2.png" alt="Screenshot Latihan 1 Home mode terang">
+                        <img src="./ss/6/3-3.png" alt="Screenshot Latihan 1 Home mode gelap">
+                        <img src="./ss/6/3-4.png" alt="Screenshot Latihan 1 Detail mode gelap">
+                    </div>
+                </div>
+            </section>
+
+            <section id="latihan-2">
+                <h2 class="section-title text-light">Latihan 2: Menghapus Semua Favorit</h2>
+                <p class="text-laprak">
+                    Latihan ini menambahkan tombol "Hapus semua" pada <code>AppBar</code> halaman Favorit yang memanggil <code>clear()</code> dari <code>FavoriteProvider</code> setelah pengguna mengonfirmasi melalui <code>AlertDialog</code>, dan tombol harus nonaktif ketika daftar favorit kosong.
+                </p>
+
+                <div class="step-box">
+
+                    <h3>A. Tombol Hapus Semua yang Nonaktif Saat Kosong</h3>
+
+                    <p>Pada <code>actions</code> di <code>AppBar</code> ditambahkan <code>IconButton</code> berikon <code>Icons.delete_sweep</code> yang dibungkus <code>Consumer&lt;FavoriteProvider&gt;</code> agar status tombol ikut berubah ketika daftar berubah. Properti <code>onPressed</code> diisi <code>favorite.count == 0 ? null : () =&gt; _confirmClearAll(context)</code>, sehingga tombol otomatis nonaktif ketika tidak ada favorit.</p>
+
+                    <div class="code-window">
+
+                        <div class="code-window-header">
+
+                            <span class="code-window-dot dot-red"></span>
+
+                            <span class="code-window-dot dot-yellow"></span>
+
+                            <span class="code-window-dot dot-green"></span>
+
+                            <span class="code-window-title">lib/pages/favorite_page.dart (AppBar Latihan 2)</span>
+
+                        </div>
+
+<pre class="code-window-body"><code>appBar: AppBar(
+  title: const Text('Favorit Saya'),
+  actions: [
+    Consumer&lt;FavoriteProvider&gt;(
+      builder: (context, favorite, child) {
+        return IconButton(
+          tooltip: 'Hapus semua',
+          icon: const Icon(Icons.delete_sweep),
+          // null = tombol nonaktif saat daftar favorit kosong
+          onPressed: favorite.count == 0
+              ? null
+              : () =&gt; _confirmClearAll(context),
+        );
+      },
+    ),
+  ],
+),</code></pre>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="step-box">
+                    <h3>B. Dialog Konfirmasi</h3>
+                    <p>Method <code>_confirmClearAll</code> menampilkan <code>AlertDialog</code> melalui <code>showDialog&lt;bool&gt;</code> berisi tombol "Batal" yang menutup dialog dengan nilai <code>false</code> dan tombol "Hapus" yang menutup dialog dengan nilai <code>true</code> menggunakan <code>Navigator.pop</code>. Nilai hasil dialog ditampung di variabel <code>confirmed</code>. Hanya jika <code>confirmed == true</code> dan <code>context.mounted</code> bernilai <code>true</code>, dipanggil <code>context.read&lt;FavoriteProvider&gt;().clear()</code> untuk menghapus seluruh favorit. Pengecekan <code>context.mounted</code> diperlukan karena dialog bersifat <em>asynchronous</em> dan halaman bisa saja sudah tertutup saat dialog selesai.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/favorite_page.dart (Latihan 2)</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:resepku/providers/favorite_provider.dart';
+
+class FavoritePage extends StatelessWidget {
+  const FavoritePage({super.key});
+
+  Future&lt;void&gt; _confirmClearAll(BuildContext context) async {
+    final confirmed = await showDialog&lt;bool&gt;(
+      context: context,
+      builder: (dialogContext) =&gt; AlertDialog(
+        title: const Text('Hapus semua favorit?'),
+        content: const Text('Semua resep akan dihapus dari daftar favorit.'),
+        actions: [
+          TextButton(
+            onPressed: () =&gt; Navigator.pop(dialogContext, false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            onPressed: () =&gt; Navigator.pop(dialogContext, true),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true &amp;&amp; context.mounted) {
+      context.read&lt;FavoriteProvider&gt;().clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Favorit Saya'),
+        actions: [
+          Consumer&lt;FavoriteProvider&gt;(
+            builder: (context, favorite, child) {
+              return IconButton(
+                tooltip: 'Hapus semua',
+                icon: const Icon(Icons.delete_sweep),
+                // null = tombol nonaktif saat daftar favorit kosong
+                onPressed: favorite.count == 0
+                    ? null
+                    : () =&gt; _confirmClearAll(context),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Consumer&lt;FavoriteProvider&gt;(
+        builder: (context, favorite, child) {
+          if (favorite.count == 0) {
+            return const Center(
+              child: Text(
+                'Belum ada resep favorit.\nTekan ikon hati di daftar resep.',
+                textAlign: TextAlign.center,
+              ),
+            );
+          }
+          return ListView(
+            children: [
+              for (final recipe in favorite.items)
+                ListTile(
+                  title: Text(recipe.name),
+                  subtitle: Text(recipe.cuisine),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () =&gt; favorite.toggle(recipe),
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}</code></pre>
+                    </div>
+                    <div class="img-placeholder">
+                        <img src="./ss/6/4-1.png" alt="Screenshot Latihan 2 tombol hapus semua">
+                        <img src="./ss/6/4-2.png" alt="Screenshot Latihan 2 dialog konfirmasi">
+                        <img src="./ss/6/4-3.png" alt="Screenshot Latihan 2 setelah dihapus tombol nonaktif">
+                    </div>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa pemilihan tempat penyimpanan state bergantung pada siapa yang membutuhkan data tersebut. State yang hanya dibutuhkan satu halaman, seperti jumlah porsi, cukup dikelola dengan <code>StatefulWidget</code> dan <code>setState()</code>. Sebaliknya, data yang dibutuhkan banyak widget dan halaman, seperti daftar favorit, tidak dapat disimpan di state lokal dan perlu dipindahkan ke <code>ChangeNotifier</code> yang disediakan melalui <code>Provider</code> di atas <code>MaterialApp</code>. 
+                        Pembacaan state menggunakan <code>context.watch</code> atau <code>Consumer</code> di dalam <code>build()</code> agar widget ikut diperbarui, dan <code>context.read</code> di dalam callback untuk memanggil method tanpa mendengarkan perubahan. Penerapan <code>ThemeProvider</code> dan fitur hapus semua favorit menunjukkan bahwa satu aplikasi dapat memiliki beberapa provider sekaligus melalui <code>MultiProvider</code> dan memadukannya dengan state lokal.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -161,3 +161,46 @@ body{
 .text-laprak {
     text-align: justify;
 }
+
+.code-window {
+    background: #1e1e1e;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+.code-window-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #323233;
+}
+.code-window-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.code-window-dot.dot-red { background: #ff5f56; }
+.code-window-dot.dot-yellow { background: #ffbd2e; }
+.code-window-dot.dot-green { background: #27c93f; }
+.code-window-title {
+    margin-left: 10px;
+    font-size: 0.85rem;
+    color: #cccccc;
+    font-family: Consolas, "Courier New", monospace;
+}
+.code-window-body {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    color: #d4d4d4;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+.code-window-body code {
+    color: inherit;
+    background: transparent;
+}
