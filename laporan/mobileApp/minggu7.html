@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laporan Praktikum Aplikasi Mobile - List, Grid, Gambar, dan Asset</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top glass-bg">
+        <div class="container">
+            <img src="/Gambar/logo-hitam.png" class="me-2" width="40">
+            <a class="navbar-brand fw-bold" href="#">Muhammad Fazil Afif</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/about.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/portofolio.html">Portofolio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link mx-2" href="/contact.html">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="container rounded-5 bg-dark text-light p-lg-5 mt-5">
+            
+            <header class="text-center text-light mb-5">
+                <h1 class="fw-bold ">LAPORAN PRAKTIKUM</h1>
+                <h4 class="text">Praktikum 7: List, Grid, Gambar, dan Asset pada Aplikasi ResepKu (Flutter)</h4>
+                <hr>
+            </header>
+
+            <section id="pendahuluan">
+                <h2 class="section-title text-light justify-content">Pendahuluan</h2>
+                <p class="text-laprak">
+                    Aplikasi mobile hampir selalu menampilkan banyak data dalam bentuk daftar dan gambar. Di Flutter, data berulang ditampilkan menggunakan <code>ListView.builder</code> yang menyusun item dalam satu kolom ke bawah, atau <code>GridView.builder</code> yang menyusun item dalam beberapa kolom dengan pengaturan <code>gridDelegate</code> (jumlah kolom, jarak antar item, dan rasio ukuran). Keduanya bersifat <em>lazy</em>, yaitu item baru dibuat ketika dibutuhkan sehingga hemat memory walaupun datanya banyak.
+                    <br><br>
+                    Untuk gambar, Flutter menyediakan dua sumber utama. <code>Image.asset</code> mengambil gambar dari dalam project yang ikut ter-<em>bundle</em> ke aplikasi sehingga langsung tersedia tanpa koneksi dan perlu didaftarkan di <code>pubspec.yaml</code>. Sebaliknya <code>Image.network</code> mengambil gambar dari URL di internet, sehingga wajib dilengkapi <em>loading state</em> dan <em>error state</em> karena koneksi dapat lambat atau terputus. Pada praktikum ini, project ResepKu dari Praktikum 6 dikembangkan dengan menambahkan logo, gambar placeholder, dan font Poppins, menampilkan foto resep dari <code>cdn.dummyjson.com</code>, serta membuat tampilan list dan grid yang dapat dipilih dengan satu tombol. State tampilan list atau grid cukup dikelola dengan <code>setState</code> karena hanya dibutuhkan satu halaman, sedangkan fitur favorit dari Provider tetap berfungsi di semua tampilan.
+                </p>
+                <a href="https://github.com/PAJILAPIP/2411531008_KelasB_AppMob_ResepKu/tree/minggu7/resepku" class="btn btn-light px-4 mb-3">
+                        <i class="bi bi-github"></i> Lihat di GitHub
+                </a>
+            </section>
+
+            <section id="tujuan">
+                <h2 class="section-title text-light">Tujuan</h2>
+                <ul>
+                    <li>Mahasiswa mampu mendaftarkan asset gambar dan custom font di <code>pubspec.yaml</code>, lalu menggunakannya dengan <code>Image.asset</code> dan <code>ThemeData</code>.</li>
+                    <li>Mahasiswa mampu menampilkan gambar dari internet dengan <code>Image.network</code> beserta <em>loading state</em> dan <em>error state</em>.</li>
+                    <li>Mahasiswa mampu menampilkan data dengan <code>ListView.builder</code> dan <code>GridView.builder</code>.</li>
+                    <li>Mahasiswa mampu mengganti tampilan list dan grid dengan state lokal (<code>setState</code>) tanpa mengganggu state favorit di Provider.</li>
+                </ul>
+            </section>
+
+            <section id="alat-bahan">
+                <h2 class="section-title text-light">Alat dan Bahan</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Laptop / Komputer</li>
+                            <li>Flutter SDK (versi stable)</li>
+                            <li>Code Editor: Visual Studio Code atau Android Studio</li>
+                            <li>Project <code>resepku</code> dari Praktikum 6</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>Emulator Android / Device Android untuk menjalankan aplikasi</li>
+                            <li>File asset: <code>logo.png</code>, <code>placeholder.png</code>, dan font Poppins (Regular, Medium, Bold)</li>
+                            <li>Koneksi Internet (foto resep dari <code>cdn.dummyjson.com</code>)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="langkah-praktikum">
+                <h2 class="section-title text-light">Langkah Praktikum</h2>
+
+                <div class="step-box">
+                    <h3>1. Menyiapkan Folder Asset dan Mendaftarkannya di pubspec.yaml</h3>
+                    <p>Di folder utama project (sejajar dengan folder <code>lib</code>, bukan di dalamnya) dibuat folder <code>assets</code> beserta dua subfolder, yaitu <code>images</code> untuk gambar dan <code>fonts</code> untuk font. File <code>logo.png</code> dan <code>placeholder.png</code> disalin ke <code>assets/images</code>, sedangkan <code>Poppins-Regular.ttf</code>, <code>Poppins-Medium.ttf</code>, dan <code>Poppins-Bold.ttf</code> disalin ke <code>assets/fonts</code> dengan nama file yang persis sama, termasuk huruf besar dan kecil.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">Terminal</span>
+                        </div>
+<pre class="code-window-body"><code>mkdir assets
+mkdir assets/images
+mkdir assets/fonts</code></pre>
+                    </div>
+                    <p>Asset dan font kemudian didaftarkan pada bagian <code>flutter:</code> di <code>pubspec.yaml</code> agar ikut dimasukkan ke aplikasi saat build.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">pubspec.yaml (bagian bawah)</span>
+                        </div>
+<pre class="code-window-body"><code>flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700</code></pre>
+                    </div>
+                    <ul>
+                        <li><strong><code>assets/images/</code></strong> — Mendaftarkan seluruh file di folder tersebut. Tanda <code>/</code> di akhir berarti satu folder, sehingga file baru di folder itu tidak perlu didaftarkan satu per satu.</li>
+                        <li><strong><code>family: Poppins</code></strong> — Nama font yang dipakai di kode. Harus sama persis dengan nilai <code>fontFamily</code> di <code>ThemeData</code>.</li>
+                        <li><strong><code>weight: 500</code> dan <code>weight: 700</code></strong> — Ketebalan huruf untuk setiap file. File tanpa <code>weight</code> dianggap normal (400), sehingga teks tebal memakai file dengan weight 700.</li>
+                        <li><strong>Indentasi YAML</strong> — Penentu struktur adalah spasi (2 spasi per tingkat). <code>assets:</code> dan <code>fonts:</code> harus sejajar dengan <code>uses-material-design:</code>, karena salah satu spasi saja menimbulkan error saat <code>flutter pub get</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Memasang Font di Tema dan Logo di AppBar (Checkpoint 1)</h3>
+                    <p>Pada <code>lib/main.dart</code>, properti <code>fontFamily: 'Poppins'</code> ditambahkan pada <code>theme</code> dan <code>darkTheme</code> di <code>MaterialApp</code> sehingga seluruh teks aplikasi memakai font Poppins pada mode terang maupun gelap. Parameter <code>themeMode</code> dan <code>builder</code> untuk footer identitas dari Praktikum 6 tidak dihapus.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/main.dart (potongan)</span>
+                        </div>
+<pre class="code-window-body"><code>theme: ThemeData(
+  colorSchemeSeed: Colors.deepOrange,
+  fontFamily: 'Poppins', // didaftarkan di pubspec.yaml
+),
+darkTheme: ThemeData(
+  colorSchemeSeed: Colors.deepOrange,
+  brightness: Brightness.dark,
+  fontFamily: 'Poppins',
+),
+themeMode: context.watch&lt;ThemeProvider&gt;().themeMode, // dari Latihan 1 Modul 6</code></pre>
+                    </div>
+                    <p>Pada <code>lib/pages/home_page.dart</code>, parameter <code>title</code> pada <code>AppBar</code> diganti menjadi <code>Row</code> berisi <code>Image.asset('assets/images/logo.png', height: 32)</code> untuk menampilkan logo dari asset, <code>SizedBox(width: 8)</code> sebagai jarak, dan teks <em>"ResepKu"</em>. Karena asset dan font baru dimasukkan saat build, aplikasi dihentikan lalu dijalankan ulang dengan <code>flutter run</code>, bukan hanya hot reload atau hot restart.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/home_page.dart (potongan)</span>
+                        </div>
+<pre class="code-window-body"><code>title: Row(
+  children: [
+    Image.asset('assets/images/logo.png', height: 32),
+    const SizedBox(width: 8),
+    const Text('ResepKu'),
+  ],
+),</code></pre>
+                    </div>
+                    <p><strong>Checkpoint 1:</strong> Home dengan logo di AppBar dan seluruh teks memakai font Poppins. Footer NIM dan nama terlihat pada screenshot.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/7/1-1.png" alt="Screenshot Checkpoint 1">
+                        <img src="./ss/7/1-2.png" alt="Screenshot Checkpoint 1-2">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Membuat Widget RecipeImage</h3>
+                    <p>Foto resep dipakai di tiga tempat (list, grid, dan halaman detail), sehingga logika menampilkan foto dibuat sekali dalam widget <code>RecipeImage</code> pada <code>lib/widgets/recipe_image.dart</code>. Widget ini membungkus <code>Image.network</code> dan menyediakan <em>loading state</em> serta <em>error state</em>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/widgets/recipe_image.dart</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+
+/// Foto resep dari internet, lengkap dengan loading state dan error state.
+class RecipeImage extends StatelessWidget {
+  const RecipeImage({super.key, required this.url, this.cacheWidth});
+
+  final String url;
+
+  /// Lebar (pixel) saat gambar di-decode. Gambar kecil cukup di-decode kecil,
+  /// sehingga memory yang dipakai jauh lebih sedikit.
+  final int? cacheWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      url,
+      fit: BoxFit.cover,
+      cacheWidth: cacheWidth,
+      // Loading state: tampil selama gambar masih diunduh.
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child; // unduhan selesai
+        // Loading State
+        return ColoredBox(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          child: const Center(child: Icon(Icons.restaurant_menu)),
+        );
+      },
+      // Error state: tampil jika URL salah atau tidak ada koneksi.
+      errorBuilder: (context, error, stackTrace) {
+        return Image.asset('assets/images/placeholder.png', fit: BoxFit.cover);
+      },
+    );
+  }
+}</code></pre>
+                    </div>
+                    <ul>
+                        <li><strong><code>BoxFit.cover</code></strong> — Foto mengisi seluruh kotak tanpa mengubah proporsi; bagian yang berlebih dipotong.</li>
+                        <li><strong><code>loadingBuilder</code></strong> — Dipanggil berkali-kali selama foto diunduh. Jika <code>loadingProgress</code> bernilai <code>null</code>, unduhan sudah selesai dan foto (<code>child</code>) ditampilkan; jika belum, ditampilkan kotak abu-abu berikon sebagai penanda loading.</li>
+                        <li><strong><code>errorBuilder</code></strong> — Dipanggil jika foto gagal dimuat, misalnya URL salah atau tidak ada koneksi. Pada kondisi ini ditampilkan <code>placeholder.png</code> dari asset.</li>
+                        <li><strong><code>cacheWidth</code></strong> — Lebar dalam pixel saat foto di-decode. Foto asli dari server berukuran besar, sehingga thumbnail kecil cukup di-decode kecil agar hemat memory.</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Thumbnail Foto di RecipeTile</h3>
+                    <p>Pada <code>recipe_tile.dart</code>, properti <code>leading</code> yang sebelumnya <code>CircleAvatar</code> diganti dengan foto berukuran 56 &times; 56. <code>ClipRRect</code> dengan <code>borderRadius: BorderRadius.circular(8)</code> membuat sudut foto membulat, <code>SizedBox</code> menentukan ukuran foto, dan <code>RecipeImage</code> menampilkan foto dengan <code>cacheWidth: 168</code>. Nilai 168 berasal dari ukuran tampil 56 dp dikalikan 3 (<code>devicePixelRatio</code> umum), sehingga foto tidak di-decode lebih besar dari kebutuhan dan memory tidak terbuang.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/widgets/recipe_tile.dart</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:resepku/models/recipe.dart';
+import 'package:resepku/pages/detail_page.dart';
+import 'package:resepku/providers/favorite_provider.dart';
+import 'package:resepku/widgets/recipe_image.dart';
+
+class RecipeTile extends StatelessWidget {
+  const RecipeTile({super.key, required this.recipe});
+
+  final Recipe recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    // watch: widget ini ikut rebuild saat daftar favorit berubah
+    final isFavorite = context.watch&lt;FavoriteProvider&gt;().isFavorite(recipe);
+
+    return ListTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          width: 56,
+          height: 56,
+          // 56 dp x 3 (kepadatan layar umum) = 168 pixel
+          child: RecipeImage(url: recipe.image, cacheWidth: 168),
+        ),
+      ),
+      title: Text(recipe.name),
+      subtitle: Text(
+        '${recipe.cuisine} • ${recipe.totalTimeMinutes} menit • ★ ${recipe.rating}',
+      ),
+      trailing: IconButton(
+        icon: Icon(
+          isFavorite ? Icons.favorite : Icons.favorite_border,
+          color: isFavorite ? Colors.red : null,
+        ),
+        // read: di dalam callback cukup "membaca", tidak perlu listen
+        onPressed: () =&gt; context.read&lt;FavoriteProvider&gt;().toggle(recipe),
+      ),
+      onTap: () =&gt; Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) =&gt; DetailPage(recipe: recipe)),
+      ),
+    );
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>5. ListView.builder di HomePage dan Pengujian Error State (Checkpoint 2)</h3>
+                    <p>Pada <code>home_page.dart</code>, <code>body</code> yang sebelumnya <code>ListView(children: [...])</code> diganti dengan <code>ListView.builder</code>. Parameter <code>itemCount</code> diisi <code>dummyRecipes.length</code> untuk menentukan jumlah item, sedangkan <code>itemBuilder</code> dipanggil Flutter untuk setiap <code>index</code> dan mengembalikan <code>RecipeTile</code> sesuai data pada urutan tersebut. Item hanya dibuat ketika akan tampil di layar. Saat aplikasi pertama dibuka, kotak berikon yang muncul sebentar sebelum foto tampil adalah <em>loading state</em>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/home_page.dart (versi Bagian B)</span>
+                        </div>
+<pre class="code-window-body"><code>body: ListView.builder(
+  itemCount: dummyRecipes.length,
+  itemBuilder: (context, index) {
+    return RecipeTile(recipe: dummyRecipes[index]);
+  },
+),</code></pre>
+                    </div>
+                    <p>Untuk menguji <em>error state</em>, mode pesawat diaktifkan pada emulator, lalu aplikasi ditutup dan dibuka kembali. Foto yang gagal dimuat diganti gambar placeholder dan aplikasi tidak menampilkan error merah. Setelah pengujian, koneksi dikembalikan seperti semula.</p>
+                    <p><strong>Checkpoint 2:</strong> Home dengan thumbnail foto resep, dan Home ketika error state aktif (gambar placeholder tampil). Footer NIM dan nama terlihat pada setiap screenshot.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/7/2-1.png" alt="Screenshot Checkpoint 2 thumbnail foto resep">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>6. Membuat RecipeGridCard</h3>
+                    <p>Kartu untuk tampilan grid dibuat pada file baru <code>lib/widgets/recipe_grid_card.dart</code>. Seperti <code>RecipeTile</code>, status favorit dibaca dari <code>FavoriteProvider</code> menggunakan <code>context.watch</code> dan diubah dengan <code>context.read</code> di dalam callback, sehingga fitur favorit dari Praktikum 6 tetap berfungsi di tampilan grid.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/widgets/recipe_grid_card.dart</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:resepku/models/recipe.dart';
+import 'package:resepku/pages/detail_page.dart';
+import 'package:resepku/providers/favorite_provider.dart';
+import 'package:resepku/widgets/recipe_image.dart';
+
+class RecipeGridCard extends StatelessWidget {
+  const RecipeGridCard({super.key, required this.recipe});
+
+  final Recipe recipe;
+
+  @override
+  Widget build(BuildContext context) {
+    final isFavorite = context.watch&lt;FavoriteProvider&gt;().isFavorite(recipe);
+    final textTheme = Theme.of(context).textTheme;
+
+    return Card(
+      clipBehavior: Clip.antiAlias, // gambar ikut terpotong sesuai sudut Card
+      child: InkWell(
+        onTap: () =&gt; Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =&gt; DetailPage(recipe: recipe)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  RecipeImage(url: recipe.image, cacheWidth: 500),
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: IconButton.filledTonal(
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : null,
+                      ),
+                      onPressed: () =&gt;
+                          context.read&lt;FavoriteProvider&gt;().toggle(recipe),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    recipe.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '★ ${recipe.rating} • ${recipe.totalTimeMinutes} menit',
+                    style: textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}</code></pre>
+                    </div>
+                    <ul>
+                        <li><strong><code>clipBehavior: Clip.antiAlias</code></strong> — Memotong foto mengikuti sudut <code>Card</code> yang membulat.</li>
+                        <li><strong><code>InkWell</code></strong> — Membuat seluruh kartu dapat di-tap dengan efek ripple untuk membuka halaman detail.</li>
+                        <li><strong><code>Expanded</code> dan <code>Stack</code></strong> — Foto mengisi sisa tinggi kartu, dan tombol favorit diletakkan di atas foto.</li>
+                        <li><strong><code>Positioned</code></strong> — Meletakkan tombol favorit di pojok kanan atas foto (<code>top: 4</code>, <code>right: 4</code>).</li>
+                        <li><strong><code>maxLines: 1</code> dan <code>TextOverflow.ellipsis</code></strong> — Nama resep yang terlalu panjang dipotong dengan tanda "..." agar kartu tidak <em>overflow</em>.</li>
+                        <li><strong><code>cacheWidth: 500</code></strong> — Foto grid lebih besar dari thumbnail list sehingga di-decode dengan lebar 500 pixel.</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h3>7. HomePage dengan Tombol Ganti Tampilan List dan Grid</h3>
+                    <p><code>HomePage</code> diubah menjadi <code>StatefulWidget</code> karena memiliki state <code>_isGrid</code> yang menentukan tampilan aktif. State ini cukup memakai <code>setState</code> karena hanya <code>HomePage</code> yang membutuhkannya (<em>ephemeral state</em>). Pada <code>actions</code> ditambahkan <code>IconButton</code> yang membalik nilai <code>_isGrid</code> dan mengganti ikonnya antara <code>Icons.grid_view</code> dan <code>Icons.view_list</code>. Properti <code>body</code> memilih <code>_buildGrid()</code> atau <code>_buildList()</code> berdasarkan nilai <code>_isGrid</code>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/home_page.dart</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:flutter/material.dart';
+import 'package:resepku/data/dummy_recipes.dart';
+import 'package:resepku/pages/settings_page.dart';
+import 'package:resepku/widgets/favorite_badge_button.dart';
+import 'package:resepku/widgets/recipe_grid_card.dart';
+import 'package:resepku/widgets/recipe_tile.dart';
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State&lt;HomePage&gt; createState() =&gt; _HomePageState();
+}
+
+class _HomePageState extends State&lt;HomePage&gt; {
+  bool _isGrid = false; // ephemeral state: hanya HomePage yang membutuhkan
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: [
+            Image.asset('assets/images/logo.png', height: 32),
+            const SizedBox(width: 8),
+            const Text('ResepKu'),
+          ],
+        ),
+        actions: [
+          IconButton(
+            tooltip: _isGrid ? 'Tampilan list' : 'Tampilan grid',
+            icon: Icon(_isGrid ? Icons.view_list : Icons.grid_view),
+            onPressed: () =&gt; setState(() =&gt; _isGrid = !_isGrid),
+          ),
+          const FavoriteBadgeButton(),
+          IconButton(
+            tooltip: 'Pengaturan',
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () =&gt; Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =&gt; const SettingsPage()),
+            ),
+          ),
+        ],
+      ),
+      body: _isGrid ? _buildGrid() : _buildList(),
+    );
+  }
+
+  Widget _buildList() {
+    return ListView.builder(
+      itemCount: dummyRecipes.length,
+      itemBuilder: (context, index) {
+        return RecipeTile(recipe: dummyRecipes[index]);
+      },
+    );
+  }
+
+  Widget _buildGrid() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(8),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        childAspectRatio: 3 / 4, // lebar : tinggi
+      ),
+      itemCount: dummyRecipes.length,
+      itemBuilder: (context, index) {
+        return RecipeGridCard(recipe: dummyRecipes[index]);
+      },
+    );
+  }
+}</code></pre>
+                    </div>
+                    <ul>
+                        <li><strong><code>_isGrid</code></strong> — Menentukan tampilan yang aktif, bernilai awal <code>false</code> (list).</li>
+                        <li><strong><code>tooltip</code></strong> — Teks bantuan saat tombol ditekan lama, sekaligus memudahkan pengujian.</li>
+                        <li><strong><code>crossAxisCount: 2</code></strong> — Grid selalu terdiri dari dua kolom.</li>
+                        <li><strong><code>mainAxisSpacing</code> dan <code>crossAxisSpacing</code></strong> — Jarak vertikal dan horizontal antar kartu sebesar 8 dp.</li>
+                        <li><strong><code>childAspectRatio: 3 / 4</code></strong> — Perbandingan lebar : tinggi kartu, sehingga kartu lebih tinggi daripada lebarnya agar foto dan teks muat.</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h3>8. Foto Besar di Halaman Detail</h3>
+                    <p>Pada <code>detail_page.dart</code> ditambahkan import <code>recipe_image.dart</code>, lalu foto diletakkan sebagai <em>child</em> pertama pada <code>ListView</code>. <code>AspectRatio</code> dengan <code>aspectRatio: 16 / 9</code> menjaga proporsi foto, <code>ClipRRect</code> membuat sudutnya membulat, dan <code>RecipeImage</code> dipakai ulang tanpa <code>cacheWidth</code> karena foto tampil hampir selebar layar.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/detail_page.dart (potongan)</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:resepku/widgets/recipe_image.dart';
+
+// ...
+children: [
+  ClipRRect(
+    borderRadius: BorderRadius.circular(16),
+    child: AspectRatio(
+      aspectRatio: 16 / 9,
+      child: RecipeImage(url: recipe.image),
+    ),
+  ),
+  const SizedBox(height: 16),
+  // ... isi halaman detail yang sebelumnya
+],</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="tabel-uji">
+                <h2 class="section-title text-light">Checkpoint 3 dan Tabel Uji</h2>
+                <p class="text-laprak">
+                    Setelah aplikasi dihentikan dan dijalankan kembali, dilakukan pengujian menggunakan enam skenario pada Langkah D.2. Footer NIM dan nama terlihat pada setiap screenshot.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Checkpoint 3</h3>
+                    <p>Screenshot Home dalam mode grid dengan minimal satu resep favorit, dan halaman Detail dengan foto besar.</p>
+                    <div class="img-placeholder">
+                        <img src="./ss/7/3-1.png" alt="Screenshot Checkpoint 3 Home mode grid dengan favorit">
+                        <img src="./ss/7/3-2.png" alt="Screenshot Checkpoint 3 Detail dengan foto besar">
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Tabel Uji Langkah D.2</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Skenario</th>
+                                    <th>Hasil yang Diharapkan</th>
+                                    <th>Sesuai?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Buka aplikasi</td>
+                                    <td>Logo di AppBar, font Poppins, thumbnail foto di setiap resep</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>Tekan tombol grid di AppBar</td>
+                                    <td>Resep tampil sebagai kartu dua kolom; ikon tombol berubah menjadi ikon list</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Di mode grid, tap ikon hati pada Margherita</td>
+                                    <td>Ikon merah dan badge bertambah</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Kembali ke mode list</td>
+                                    <td>Ikon hati Margherita tetap merah</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Tap kartu Alfredo di mode grid</td>
+                                    <td>Halaman detail terbuka dengan foto besar di atas</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>Aktifkan mode pesawat, tutup dan buka aplikasi</td>
+                                    <td>Gambar placeholder tampil tanpa error merah</td>
+                                    <td>&#10003;</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="perhitungan">
+                <h2 class="section-title text-light">Perhitungan Langkah C.3</h2>
+                <p class="text-laprak">
+                    Perhitungan ukuran setiap kartu grid pada HP dengan lebar layar 360 dp, berdasarkan pengaturan <code>GridView.builder</code> pada <code>HomePage</code>: <code>padding: EdgeInsets.all(8)</code>, <code>crossAxisCount: 2</code>, <code>crossAxisSpacing: 8</code>, dan <code>childAspectRatio: 3 / 4</code>.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. Rumus dan Langkah Perhitungan</h3>
+                    <p>Rumus lebar kartu pada grid dengan <em>n</em> kolom adalah <code>(lebar layar &minus; padding kiri &minus; padding kanan &minus; (n &minus; 1) &times; crossAxisSpacing) / n</code>, sedangkan tinggi kartu adalah <code>lebar kartu / childAspectRatio</code>.</p>
+                    <ul>
+                        <li><strong>Lebar area grid</strong> = 360 &minus; (8 + 8) = 360 &minus; 16 = 344 dp.</li>
+                        <li><strong>Total jarak antar kolom</strong> = (2 &minus; 1) &times; 8 = 8 dp.</li>
+                        <li><strong>Lebar tersedia untuk kartu</strong> = 344 &minus; 8 = 336 dp.</li>
+                        <li><strong>Lebar tiap kartu</strong> = 336 / 2 = 168 dp.</li>
+                        <li><strong>Tinggi tiap kartu</strong> = 168 / (3/4) = 168 &times; 4/3 = 224 dp.</li>
+                    </ul>
+                    <p>Lebar kartu 168 dp pada layar dengan <code>devicePixelRatio</code> 3&times; setara sekitar 504 pixel, sehingga nilai <code>cacheWidth: 500</code> pada <code>RecipeGridCard</code> sudah sesuai dengan kebutuhan tampilan.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Hasil Perhitungan</h3>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Yang Dihitung</th>
+                                    <th>Hasil</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Lebar kartu (dp)</td>
+                                    <td>168 dp</td>
+                                </tr>
+                                <tr>
+                                    <td>Tinggi kartu (dp)</td>
+                                    <td>224 dp</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="analisis">
+                <h2 class="section-title text-light">Pertanyaan Analisis</h2>
+
+                <div class="step-box">
+                    <h3>1. Mengapa Status Favorit Tetap Sama Saat Tampilan Berganti?</h3>
+                    <p>Status favorit tidak disimpan di dalam <code>RecipeGridCard</code> maupun <code>RecipeTile</code>, melainkan di <code>FavoriteProvider</code> sebagai state global yang dipasang di atas <code>MaterialApp</code> (Praktikum 6). Kedua widget membaca data yang sama dengan <code>context.watch&lt;FavoriteProvider&gt;().isFavorite(recipe)</code> dan mengubahnya melalui <code>toggle()</code> yang memanggil <code>notifyListeners()</code>. Ketika tampilan berganti, hanya state lokal <code>_isGrid</code> pada <code>HomePage</code> yang berubah, sehingga widget tile atau kartu lama dibuang dan yang baru dibuat. Karena datanya berada di luar widget tersebut, status favorit tidak ikut hilang. Hal ini berbeda dengan eksperimen state lokal pada Praktikum 6, di mana status <code>_isFavorite</code> akan hilang bersama widgetnya.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>2. Jika Baris <code>if (loadingProgress == null) return child;</code> Dihapus</h3>
+                    <p>Yang tampil hanya kotak abu-abu berikon <code>restaurant_menu</code> (tampilan loading) untuk selamanya, dan foto tidak pernah muncul walaupun sudah selesai diunduh. Penyebabnya, <code>loadingBuilder</code> tetap dipanggil ketika unduhan selesai dengan <code>loadingProgress</code> bernilai <code>null</code>, dan baris tersebutlah yang meneruskan foto (<code>child</code>) ke layar. Tanpa baris itu, kode selalu berlanjut ke <code>return ColoredBox(...)</code> sehingga <code>child</code> yang berisi foto tidak pernah dikembalikan.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>3. Perhitungan Pixel dengan dan Tanpa cacheWidth</h3>
+                    <p>Foto asli berukuran 1200 &times; 800 pixel, sehingga tanpa <code>cacheWidth</code> foto di-decode penuh sebanyak 1200 &times; 800 = 960.000 pixel. Dengan <code>cacheWidth: 168</code>, lebar menjadi 168 pixel dan tinggi mengikuti proporsi, yaitu 800/1200 &times; 168 = 112 pixel, sehingga yang di-decode hanya 168 &times; 112 = 18.816 pixel (sekitar 51 kali lebih sedikit). Dengan asumsi 4 byte per pixel (RGBA), satu foto memakai sekitar 3,84 MB tanpa <code>cacheWidth</code> dan sekitar 75 KB dengan <code>cacheWidth</code>. Ketika data menjadi 50 resep pada Modul 8, foto yang di-decode penuh dapat menghabiskan sekitar 192 MB (50 &times; 3,84 MB) dibanding sekitar 3,8 MB dengan <code>cacheWidth</code>. Tanpa <code>cacheWidth</code>, aplikasi berisiko boros memory, scroll tersendat, bahkan ditutup paksa oleh sistem karena kehabisan memory.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3>4. Mengapa Logo Memakai Image.asset dan Foto Resep Memakai Image.network?</h3>
+                    <p>Logo adalah identitas aplikasi yang tetap dan selalu dibutuhkan, sehingga sebaiknya ikut ter-<em>bundle</em> sebagai asset agar langsung tampil tanpa koneksi dan tanpa <em>loading state</em>. Jika diambil dari internet, logo akan terlambat muncul atau bahkan hilang ketika tidak ada koneksi, serta bergantung pada server luar. Sebaliknya, foto resep tidak dimasukkan ke asset karena jumlah dan isinya dinamis (pada Modul 8 diambil dari API dan dapat bertambah). Memasukkan semua foto ke asset akan membuat ukuran aplikasi (APK) membengkak, dan setiap penambahan resep baru mengharuskan aplikasi diperbarui ulang.</p>
+                </div>
+            </section>
+
+            <section id="latihan-1">
+                <h2 class="section-title text-light">Latihan 1: Filter Cuisine</h2>
+                <p class="text-laprak">
+                    Latihan ini menambahkan deretan <code>ChoiceChip</code> di bawah AppBar Home yang dapat digeser ke samping, berisi "Semua" ditambah setiap cuisine yang ada di data. Memilih sebuah chip hanya menampilkan resep dengan cuisine tersebut, baik di mode list maupun grid.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. State Cuisine dan Data yang Difilter</h3>
+                    <p>Pada <code>_HomePageState</code> ditambahkan state <code>String? _cuisine</code> yang menyimpan cuisine terpilih, di mana nilai <code>null</code> berarti semua cuisine. Daftar cuisine diambil dari data menggunakan <code>dummyRecipes.map((r) =&gt; r.cuisine).toSet().toList()</code>: <code>map</code> mengambil cuisine dari setiap resep, <code>toSet()</code> menghilangkan duplikat, dan <code>toList()</code> mengubahnya kembali menjadi list. Variabel <code>recipes</code> berisi data yang sudah difilter menggunakan <code>where</code> sehingga dapat dipakai oleh tampilan list maupun grid.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/home_page.dart (state dan data terfilter)</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:resepku/models/recipe.dart';
+
+class _HomePageState extends State&lt;HomePage&gt; {
+  bool _isGrid = false;
+  String? _cuisine; // null = semua cuisine
+
+  @override
+  Widget build(BuildContext context) {
+    // Daftar cuisine diambil dari data, bukan ditulis manual
+    final cuisines = dummyRecipes.map((r) =&gt; r.cuisine).toSet().toList();
+
+    // Data yang sudah difilter, dipakai oleh tampilan list maupun grid
+    final recipes = _cuisine == null
+        ? dummyRecipes
+        : dummyRecipes.where((r) =&gt; r.cuisine == _cuisine).toList();
+
+    return Scaffold(
+      appBar: AppBar(
+        // ... tidak berubah
+      ),
+      body: Column(
+        // ... lihat langkah B
+      ),
+    );
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Deretan ChoiceChip dan Pengiriman Data Terfilter</h3>
+                    <p><code>body</code> diubah menjadi <code>Column</code>. Deretan chip dibungkus <code>SizedBox(height: 56)</code> berisi <code>ListView</code> horizontal, karena <code>ListView</code> horizontal di dalam <code>Column</code> wajib diberi tinggi. Chip "Semua" bernilai terpilih ketika <code>_cuisine == null</code>, sedangkan chip setiap cuisine dibuat dengan perulangan <code>for</code> dan menyimpan cuisine-nya ke <code>_cuisine</code> di dalam <code>setState</code> saat dipilih. List atau grid dibungkus <code>Expanded</code> agar mengisi sisa layar. Method <code>_buildList</code> dan <code>_buildGrid</code> kini menerima parameter <code>List&lt;Recipe&gt; recipes</code> sehingga yang ditampilkan adalah data hasil filter.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/home_page.dart (body dan builder)</span>
+                        </div>
+<pre class="code-window-body"><code>body: Column(
+  children: [
+    SizedBox(
+      height: 56, // ListView horizontal di dalam Column wajib diberi tinggi
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: ChoiceChip(
+              label: const Text('Semua'),
+              selected: _cuisine == null,
+              onSelected: (_) =&gt; setState(() =&gt; _cuisine = null),
+            ),
+          ),
+          for (final cuisine in cuisines)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: ChoiceChip(
+                label: Text(cuisine),
+                selected: _cuisine == cuisine,
+                onSelected: (_) =&gt; setState(() =&gt; _cuisine = cuisine),
+              ),
+            ),
+        ],
+      ),
+    ),
+    // List atau grid mengisi sisa layar
+    Expanded(
+      child: _isGrid ? _buildGrid(recipes) : _buildList(recipes),
+    ),
+  ],
+),
+
+// ...
+Widget _buildList(List&lt;Recipe&gt; recipes) {
+  return ListView.builder(
+    itemCount: recipes.length,
+    itemBuilder: (context, index) {
+      return RecipeTile(recipe: recipes[index]);
+    },
+  );
+}
+
+Widget _buildGrid(List&lt;Recipe&gt; recipes) {
+  return GridView.builder(
+    padding: const EdgeInsets.all(8),
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      childAspectRatio: 3 / 4,
+    ),
+    itemCount: recipes.length,
+    itemBuilder: (context, index) {
+      return RecipeGridCard(recipe: recipes[index]);
+    },
+  );
+}</code></pre>
+                    </div>
+                    <div class="img-placeholder">
+                        <img src="./ss/7/4-1.png" alt="Screenshot Latihan 1 filter mode list">
+                        <img src="./ss/7/4-2.png" alt="Screenshot Latihan 1 filter mode grid">
+                    </div>
+                </div>
+            </section>
+
+            <section id="latihan-2">
+                <h2 class="section-title text-light">Latihan 2: Halaman Favorit yang Lebih Rapi</h2>
+                <p class="text-laprak">
+                    Latihan ini mengubah halaman Favorit agar memakai <code>ListView.separated</code> dengan <code>Divider</code>, menampilkan thumbnail foto memakai <code>RecipeImage</code>, serta memungkinkan item digeser ke kiri untuk dihapus dari favorit (<code>Dismissible</code>) disertai <code>SnackBar</code> berisi nama resep yang dihapus.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. ListView.separated dan Thumbnail Foto</h3>
+                    <p>Pada <code>Consumer&lt;FavoriteProvider&gt;</code>, <code>ListView(children: [...])</code> diganti dengan <code>ListView.separated</code>. Parameter <code>separatorBuilder</code> mengembalikan <code>Divider(height: 1)</code> sebagai garis pemisah di antara item, sedangkan <code>itemBuilder</code> membangun setiap baris dari daftar <code>favorite.items</code>. Pada <code>leading</code> ditambahkan <code>RecipeImage</code> berukuran 56 &times; 56 dengan sudut membulat, sama seperti thumbnail pada daftar resep di Home.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/favorite_page.dart (ListView.separated dan thumbnail)</span>
+                        </div>
+<pre class="code-window-body"><code>import 'package:resepku/widgets/recipe_image.dart';
+
+// ... di dalam Consumer&lt;FavoriteProvider&gt;, setelah pengecekan daftar kosong
+final items = favorite.items;
+
+return ListView.separated(
+  itemCount: items.length,
+  separatorBuilder: (context, index) =&gt; const Divider(height: 1),
+  itemBuilder: (context, index) {
+    final recipe = items[index];
+    return ListTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          width: 56,
+          height: 56,
+          child: RecipeImage(url: recipe.image, cacheWidth: 168),
+        ),
+      ),
+      title: Text(recipe.name),
+      subtitle: Text(recipe.cuisine),
+    );
+  },
+);</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. Dismissible dan SnackBar</h3>
+                    <p>Setiap <code>ListTile</code> dibungkus <code>Dismissible</code> agar dapat digeser. Parameter <code>key</code> diisi <code>ValueKey(recipe.id)</code>, bukan <code>index</code>, karena key harus unik dan stabil; jika memakai <code>index</code>, posisi item bergeser setiap ada yang dihapus sehingga Flutter dapat salah mengenali item. Properti <code>direction: DismissDirection.endToStart</code> membatasi geseran hanya ke kiri, dan <code>background</code> menampilkan latar merah berikon hapus di belakang item saat digeser. Pada <code>onDismissed</code>, resep dihapus dari favorit melalui <code>favorite.toggle(recipe)</code>, lalu <code>ScaffoldMessenger.of(context).showSnackBar</code> menampilkan nama resep yang dihapus. Tombol "Hapus semua" dari Praktikum 6 pada <code>AppBar</code> tetap dipertahankan tanpa perubahan.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/favorite_page.dart (Dismissible dan SnackBar)</span>
+                        </div>
+<pre class="code-window-body"><code>itemBuilder: (context, index) {
+  final recipe = items[index];
+  return Dismissible(
+    key: ValueKey(recipe.id), // unik dan stabil, bukan index
+    direction: DismissDirection.endToStart, // hanya geser ke kiri
+    background: Container(
+      color: Colors.red,
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.only(right: 16),
+      child: const Icon(Icons.delete, color: Colors.white),
+    ),
+    onDismissed: (direction) {
+      favorite.toggle(recipe);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${recipe.name} dihapus dari favorit')),
+      );
+    },
+    child: ListTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          width: 56,
+          height: 56,
+          child: RecipeImage(url: recipe.image, cacheWidth: 168),
+        ),
+      ),
+      title: Text(recipe.name),
+      subtitle: Text(recipe.cuisine),
+    ),
+  );
+},</code></pre>
+                    </div>
+                    <div class="img-placeholder">
+                        <img src="./ss/7/5-1.png" alt="Screenshot Latihan 2 halaman Favorit dengan thumbnail">
+                        <img src="./ss/7/5-2.png" alt="Screenshot Latihan 2 item digeser ke kiri">
+                        <img src="./ss/7/5-3.png" alt="Screenshot Latihan 2 SnackBar nama resep dihapus">
+                    </div>
+                </div>
+            </section>
+
+            <section id="latihan-3">
+                <h2 class="section-title text-light">Latihan 3 (Bonus): Foto yang Mengecil Saat Di-scroll</h2>
+                <p class="text-laprak">
+                    Latihan bonus ini mengubah halaman detail menjadi <code>CustomScrollView</code> dengan <code>SliverAppBar</code> yang menampilkan foto resep sebagai latar dan mengecil ketika halaman di-scroll.
+                </p>
+
+                <div class="step-box">
+                    <h3>A. SliverAppBar dengan Foto dari cached_network_image</h3>
+                    <p>Package <code>cached_network_image</code> dipasang dengan <code>flutter pub add cached_network_image</code> agar foto tersimpan di disk dan tidak diunduh ulang ketika aplikasi dibuka kembali. <code>Scaffold</code> kini hanya berisi <code>body: CustomScrollView</code> dengan daftar <code>slivers</code>. Pada <code>SliverAppBar</code>, <code>pinned: true</code> membuat AppBar tetap menempel di atas ketika foto mengecil, dan <code>expandedHeight: 260</code> menentukan tinggi awal ketika foto masih penuh. Foto ditempatkan pada <code>background</code> milik <code>FlexibleSpaceBar</code> menggunakan <code>CachedNetworkImage</code>, dengan <code>placeholder</code> sebagai loading state dan <code>errorWidget</code> yang menampilkan <code>placeholder.png</code> sebagai error state. Judul resep dan tombol favorit dipindahkan ke <code>FlexibleSpaceBar</code> dan <code>actions</code>.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/detail_page.dart (SliverAppBar)</span>
+                        </div>
+<pre class="code-window-body"><code>// Terminal: flutter pub add cached_network_image
+import 'package:cached_network_image/cached_network_image.dart';
+
+// ...
+return Scaffold(
+  body: CustomScrollView(
+    slivers: [
+      SliverAppBar(
+        pinned: true, // AppBar tetap tampil saat foto mengecil
+        expandedHeight: 260,
+        actions: [
+          IconButton(
+            icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
+            onPressed: () =&gt; context.read&lt;FavoriteProvider&gt;().toggle(recipe),
+          ),
+        ],
+        flexibleSpace: FlexibleSpaceBar(
+          title: Text(recipe.name),
+          background: CachedNetworkImage(
+            imageUrl: recipe.image,
+            fit: BoxFit.cover,
+            placeholder: (context, url) =&gt; ColoredBox(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: const Center(child: Icon(Icons.restaurant_menu)),
+            ),
+            errorWidget: (context, url, error) =&gt;
+                Image.asset('assets/images/placeholder.png', fit: BoxFit.cover),
+          ),
+        ),
+      ),
+      // ... lihat langkah B
+    ],
+  ),
+);</code></pre>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3>B. SliverToBoxAdapter dan SliverList.builder</h3>
+                    <p>Widget biasa tidak dapat langsung ditempatkan di dalam <code>slivers</code>, sehingga bagian jenis masakan, porsi, total kalori, dan judul "Bahan" dibungkus <code>SliverToBoxAdapter</code> yang mengubah widget biasa menjadi sliver. Daftar bahan memakai <code>SliverList.builder</code>, versi <em>lazy</em> dari daftar di dalam <code>CustomScrollView</code>, di mana <code>itemCount</code> diisi <code>recipe.ingredients.length</code> dan <code>itemBuilder</code> mengembalikan <code>ListTile</code> untuk setiap bahan. State lokal <code>_servings</code> dan fitur favorit tetap berfungsi seperti sebelumnya.</p>
+                    <div class="code-window">
+                        <div class="code-window-header">
+                            <span class="code-window-dot dot-red"></span>
+                            <span class="code-window-dot dot-yellow"></span>
+                            <span class="code-window-dot dot-green"></span>
+                            <span class="code-window-title">lib/pages/detail_page.dart (SliverToBoxAdapter dan SliverList)</span>
+                        </div>
+<pre class="code-window-body"><code>slivers: [
+  // ... SliverAppBar
+
+  SliverToBoxAdapter(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${recipe.cuisine} • ${recipe.difficulty} • ${recipe.totalTimeMinutes} menit',
+            style: textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 16),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Text('Porsi', style: textTheme.titleMedium),
+                  const Spacer(),
+                  IconButton.filledTonal(
+                    onPressed: _servings &gt; 1 ? _removeServing : null,
+                    icon: const Icon(Icons.remove),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text('$_servings', style: textTheme.titleLarge),
+                  ),
+                  IconButton.filledTonal(
+                    onPressed: _addServing,
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text('Total kalori: $totalCalories kkal', style: textTheme.titleMedium),
+          const SizedBox(height: 24),
+          Text('Bahan', style: textTheme.titleLarge),
+        ],
+      ),
+    ),
+  ),
+
+  SliverList.builder(
+    itemCount: recipe.ingredients.length,
+    itemBuilder: (context, index) {
+      return ListTile(
+        dense: true,
+        leading: const Icon(Icons.check_circle_outline),
+        title: Text(recipe.ingredients[index]),
+      );
+    },
+  ),
+],</code></pre>
+                    </div>
+                    <div class="img-placeholder">
+                        <img src="./ss/7/6-1.png" alt="Screenshot Latihan 3 foto penuh">
+                        <img src="./ss/7/6-2.png" alt="Screenshot Latihan 3 foto mengecil saat di-scroll">
+                    </div>
+                </div>
+            </section>
+
+            <section id="kesimpulan">
+                <h2 class="section-title">Kesimpulan</h2>
+                    <p class="mb-0">
+                        Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa asset gambar dan font harus didaftarkan di <code>pubspec.yaml</code> sebelum digunakan melalui <code>Image.asset</code> dan <code>fontFamily</code>, sedangkan gambar dari internet ditampilkan dengan <code>Image.network</code> yang wajib dilengkapi <em>loading state</em> dan <em>error state</em> serta <code>cacheWidth</code> agar hemat memory. 
+                        <code>ListView.builder</code> dan <code>GridView.builder</code> menampilkan data secara <em>lazy</em> sehingga efisien, dan ukuran kartu pada grid dapat dihitung dari lebar layar, padding, jarak antar kolom, dan <code>childAspectRatio</code>. 
+                        Pemisahan jenis state juga terbukti tepat: tampilan list atau grid cukup memakai <code>setState</code> karena hanya dibutuhkan satu halaman, sedangkan status favorit di Provider tetap konsisten di semua tampilan. 
+                        Dengan memahami konsep ini, mahasiswa dapat membangun tampilan daftar berfoto yang responsif dan tetap berfungsi ketika koneksi internet terputus.
+                    </p>
+            </section>
+
+            <div class="text-center mt-5">
+                <a href="../portofolio.html" class="btn btn-secondary px-4">Kembali ke Portofolio</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<footer class="footer-section text-light mt-5 pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4">
+                <h4 class="fw-bold">About Me</h4>
+                <p class="text-light">
+                    Hi, I'm <strong>Muhammad Fazil Afif</strong>, an Informatics student at Andalas University.  
+                    I create projects in web development, UI/UX, and technology exploration.  
+                    This website showcases my works and achievements.
+                </p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="./index.html" class="footer-link">Home</a></li>
+                    <li><a href="./about.html" class="footer-link">About</a></li>
+                    <li><a href="./portofolio.html" class="footer-link">Portfolio</a></li>
+                    <li><a href="./contact.html" class="footer-link">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-semibold mb-3">Follow Me</h5>
+                <div class="d-flex gap-3">
+                    <a href="https://www.instagram.com/muhammadfazilafif/" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    <a href="https://github.com/PAJILAPIP" class="social-icon"><i class="bi bi-github"></i></a>
+                    <a href="https://www.linkedin.com/in/muhammad-fazil-afif-38495931b/" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=muhammadfazil2406@gmail.com  " class="social-icon"><i class="bi bi-envelope"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="mt-4 text-secondary">
+
+        <div class="text-center text-light">
+            © 2025 Muhammad Fazil Afif — All Rights Reserved
+        </div>
+    </div>
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
